@@ -22,22 +22,52 @@ const GameScreen = () => {
   return (
     <GameLayout>
       <div className="p-8">
-        <h1 className="text-6xl font-bold text-gray-800 mb-4">Welcome User</h1>
-        <hr className="h-1 bg-gray-700 my-2"/>
-        <p className="text-xl text-gray-600 mb-8">
-          Complete all your assigned tasks. Click on each department in the sidebar to get started.
-        </p>
-        <img className="fixed right-[500px] top-[200px] h-96" src="Logo.png"/>
-        <div className="p-6">
-          <h2 className="text-2xl font-semibold mb-4">Instructions</h2>
-          <ul className="space-y-2 text-gray-700">
-            <li>• Click on departments in the left sidebar to view your assigned tasks</li>
-            <li>• Your to-do list is displayed on the right side</li>
-            <li>• Each task must be completed before you can finish the game</li>
-            <li>• You can switch between tasks at any time</li>
-            <li>• Pay attention to task details and requirements</li>
-          </ul>
+
+        {/* === HEADER: Title + Line === */}
+        <h1 className="text-6xl font-bold text-gray-800 mb-2">
+          Welcome User
+        </h1>
+        <hr className="h-1 bg-gray-700 mt-3 mb-6"/>
+
+        {/* === MAIN CONTENT ROW === */}
+        <div className="flex justify-between items-start">
+
+          {/* LEFT TEXT BLOCK */}
+          <div className="max-w-[70%] text-xl text-gray-700 leading-relaxed space-y-8">
+
+            <p>
+              Your presence has been acknowledged. By accessing this portal you affirm
+              your compliance to Statute 47-B, governing the submission of all necessary,
+              unnecessary and yet-to-be-defined reports. Before proceeding, please be
+              advised that failure to adhere to established guidelines may result in
+              indefinite processing delays, conditional rejection, or retroactive
+              non-compliance penalties.
+            </p>
+
+            <p>
+              You have been assigned the task of Filing a Standard Judicial Report for
+              citizen K. Please be aware that a report cannot be submitted until all
+              necessary prerequisites—both known and yet-to-be-determined—have been met.
+              Please ensure that all supplementary authorizations, approvals, and
+              verification are obtained. Any errors in this process will be considered
+              your responsibility, even if the error itself goes unnoticed.
+            </p>
+
+            <p className="font-semibold text-2xl">
+              Proceed with caution.
+            </p>
+
+          </div>
+
+          {/* RIGHT LOGO */}
+          <img
+            src="/Logo.png"
+            alt="Game logo"
+            className="ml-8 w-[clamp(8rem,12vw,14rem)] object-contain"
+          />
+
         </div>
+
       </div>
     </GameLayout>
   );
