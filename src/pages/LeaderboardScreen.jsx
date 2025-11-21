@@ -50,7 +50,7 @@ const LeaderboardScreen = () => {
         {/* Play Button */}
         <div className="flex justify-center mb-4 mt-[440px]">
           <button
-            onClick={() => navigate('/')}
+            onClick={() => navigate(-1)}
             className="bg-[#003476] hover:bg-blue-800 text-white py-4 px-24 rounded-xl"
           >
             Go Back
