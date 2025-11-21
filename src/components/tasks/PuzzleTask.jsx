@@ -58,91 +58,137 @@ const PuzzleTask = () => {
   return (
     <GameLayout>
       <div className="p-8">
-        <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-4">
-          Secretary of Bored and Shady Individuals
+
+        {/* === HEADER — same as Form Task === */}
+        <h1 className="text-5xl font-bold text-gray-800 mb-2">
+          Mental Coherence Review
         </h1>
-        <p className="text-gray-600 mb-6">Complete two puzzles to proceed.</p>
 
-        {currentPuzzle === 1 ? (
-          <div>
-            <div className="bg-blue-50 border-l-4 border-blue-600 p-4 mb-6">
-              <h2 className="text-xl font-bold text-blue-900 mb-2">Puzzle 1: Logic Challenge</h2>
-              <p className="text-gray-700 mb-4">
-                If all Glorps are Zinks, and some Zinks are Flibs, can we conclude that some Glorps are Flibs?
-              </p>
-              <p className="text-sm text-gray-600">Options: Yes / No / Cannot be determined</p>
+        <hr className="h-1 bg-gray-700 mt-3 mb-6" />
+
+        <p className="text-gray-700 text-xl max-w-12xl mb-3">
+          As part of your routine evaluative review and in accordance with Regulation 14-R on Authorized Thought Patterns, 
+          all participants must undergo a brief cognitive alignment check to ensure ongoing compatibility with departmental standards.<br></br>
+          You are instructed to fulfill the following cognitive verification test.<br></br>
+          Your responses will be reviewed to confirm that reasoning deviations remain within acceptable administrative thresholds.<br></br>
+          Failure to provide sufficiently coherent responses may result in additional clarification procedures.
+        </p>
+
+        <p className="text-gray-700 text-xl max-w-3xl mb-13">
+          Complete the following puzzles to proceed.
+        </p>
+
+        {/* === CONTENT WRAPPER === */}
+        <div className="max-w-3xl mx-auto">
+
+          {/* ===== PUZZLE 1 ===== */}
+          {currentPuzzle === 1 ? (
+            <div className="space-y-6">
+
+              {/* Puzzle Block */}
+              <div className="bg-blue-50 border-l-4 border-blue-700 p-4">
+                <h2 className="text-xl font-bold text-blue-900 mb-2">
+                  Puzzle 1: Logic Challenge
+                </h2>
+                <p className="text-gray-700 text-lg mb-4">
+                  If all Glorps are Zinks, and some Zinks are Flibs,
+                  can we conclude that some Glorps are Flibs?
+                </p>
+                <p className="text-base text-gray-600">
+                  Options: Yes / No / Cannot be determined
+                </p>
+              </div>
+
+              {/* Input */}
+              <input
+                type="text"
+                value={puzzle1Answer}
+                onChange={(e) => setPuzzle1Answer(e.target.value)}
+                className="w-full px-4 py-3 border-2 border-gray-400 rounded focus:outline-none focus:border-blue-500"
+                placeholder="Type your answer..."
+              />
+
+              {/* Message */}
+              {message && (
+                <div className={`p-4 rounded-lg text-center ${
+                  message.includes('✓')
+                    ? 'bg-green-100 text-green-800'
+                    : 'bg-red-100 text-red-800'
+                }`}>
+                  {message}
+                </div>
+              )}
+
+              {/* Submit */}
+              <div className="flex justify-center">
+                <button
+                  onClick={handlePuzzle1Submit}
+                  className="px-10 py-3 bg-blue-600 hover:bg-blue-700 text-white text-lg rounded-md transition"
+                >
+                  Submit Answer
+                </button>
+              </div>
             </div>
+          ) : (
+          /* ===== PUZZLE 2 ===== */
+            <div className="space-y-6">
 
-            <input
-              type="text"
-              value={puzzle1Answer}
-              onChange={(e) => setPuzzle1Answer(e.target.value)}
-              className="w-full px-4 py-3 border-2 border-gray-400 rounded focus:outline-none focus:border-blue-500 mb-4"
-              placeholder="Type your answer..."
-            />
-
-            {message && (
-              <div className={`p-4 rounded-lg mb-4 ${
-                message.includes('✓')
-                  ? 'bg-green-100 text-green-800'
-                  : 'bg-red-100 text-red-800'
-              }`}>
-                {message}
+              <div className="bg-blue-50 border-l-4 border-blue-600 p-4">
+                <h2 className="text-xl font-bold text-blue-900 mb-2">
+                  Puzzle 2: Pattern Recognition
+                </h2>
+                <p className="text-gray-700 text-lg mb-4">
+                  What comes next in this sequence?
+                </p>
+                <div className="text-2xl font-mono text-center my-4">
+                  2, 4, 8, 16, 32, ?
+                </div>
               </div>
-            )}
 
-            <button
-              onClick={handlePuzzle1Submit}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors"
-            >
-              Submit Answer
-            </button>
-          </div>
-        ) : (
-          <div>
-            <div className="bg-green-50 border-l-4 border-green-600 p-4 mb-6">
-              <h2 className="text-xl font-bold text-green-900 mb-2">Puzzle 2: Pattern Recognition</h2>
-              <p className="text-gray-700 mb-4">
-                What comes next in this sequence?
-              </p>
-              <div className="text-2xl font-mono text-center my-4">
-                2, 4, 8, 16, 32, ?
+              <input
+                type="text"
+                value={puzzle2Answer}
+                onChange={(e) => setPuzzle2Answer(e.target.value)}
+                className="w-full px-4 py-3 border-2 border-gray-400 rounded focus:outline-none focus:border-blue-500"
+                placeholder="Type your answer..."
+              />
+
+              {message && (
+                <div className={`p-4 rounded-lg text-center ${
+                  message.includes('✓')
+                    ? 'bg-green-100 text-green-800'
+                    : 'bg-red-100 text-red-800'
+                }`}>
+                  {message}
+                </div>
+              )}
+
+              <div className="flex justify-center">
+                <button
+                  onClick={handlePuzzle2Submit}
+                  className="px-10 py-3 bg-blue-600 hover:bg-blue-700 text-white text-lg rounded-md transition"
+                >
+                  Submit Answer
+                </button>
               </div>
             </div>
+          )}
 
-            <input
-              type="text"
-              value={puzzle2Answer}
-              onChange={(e) => setPuzzle2Answer(e.target.value)}
-              className="w-full px-4 py-3 border-2 border-gray-400 rounded focus:outline-none focus:border-blue-500 mb-4"
-              placeholder="Type your answer..."
+          {/* Puzzle Indicator */}
+          <div className="mt-10 flex justify-center space-x-4">
+            <div
+              className={`w-3 h-3 rounded-full ${
+                currentPuzzle === 1 ? 'bg-blue-600' : 'bg-gray-300'
+              }`}
             />
-
-            {message && (
-              <div className={`p-4 rounded-lg mb-4 ${
-                message.includes('✓')
-                  ? 'bg-green-100 text-green-800'
-                  : 'bg-red-100 text-red-800'
-              }`}>
-                {message}
-              </div>
-            )}
-
-            <button
-              onClick={handlePuzzle2Submit}
-              className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg transition-colors"
-            >
-              Submit Answer
-            </button>
+            <div
+              className={`w-3 h-3 rounded-full ${
+                currentPuzzle === 2 ? 'bg-blue-600' : 'bg-gray-300'
+              }`}
+            />
           </div>
-        )}
 
-        <div className="mt-6 flex justify-center space-x-4">
-          <div className={`w-3 h-3 rounded-full ${currentPuzzle === 1 ? 'bg-blue-600' : 'bg-green-600'}`} />
-          <div className={`w-3 h-3 rounded-full ${currentPuzzle === 2 ? 'bg-green-600' : 'bg-gray-300'}`} />
         </div>
-      </div>
       </div>
     </GameLayout>
   );

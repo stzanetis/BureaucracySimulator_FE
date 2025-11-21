@@ -52,121 +52,139 @@ const FormTask = () => {
   };
 
   return (
-    <GameLayout>
-      <div className="p-8">
-        <div className="max-w-xl mx-auto bg-white rounded-lg shadow-lg p-8">
+  <GameLayout>
+    <div className="p-8">
 
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">Official Form 27B-6</h1>
-        <p className="text-gray-600 mb-6">Please complete this form with accurate information.</p>
+      {/* === HEADER === */}
+      <h1 className="text-5xl font-bold text-gray-800 mb-2">
+        Official Form 27B-6
+      </h1>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-gray-700 font-semibold mb-2">
-              Full Legal Name *
-            </label>
-            <input
-              type="text"
-              name="fullName"
-              value={formData.fullName}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border-2 border-gray-400 rounded focus:outline-none focus:border-blue-500"
-              placeholder="First Middle Last"
-            />
+      <hr className="h-1 bg-gray-700 mt-3 mb-6" />
+
+      {/* === OPTIONAL SUBTEXT (small description) === */}
+      <p className="text-gray-700 text-xl max-w-3xl mb-5">
+        Please complete this form with accurate information.
+      </p>
+
+      {/* === FORM FIELDS === */}
+      <form onSubmit={handleSubmit} className="max-w-3xl mx-auto space-y-5">
+
+        {/* Full Name */}
+        <div className="space-y-2">
+          <label className="block text-gray-800 font-semibold text-xl">
+            Full Legal Name *
+          </label>
+          <input
+            type="text"
+            name="fullName"
+            value={formData.fullName}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border-2 border-gray-400 rounded focus:outline-none focus:border-blue-500"
+            placeholder="First Middle Last"
+          />
+        </div>
+
+        {/* ID Number */}
+        <div className="space-y-2">
+          <label className="block text-gray-800 font-semibold text-xl">
+            Identification Number *
+          </label>
+          <input
+            type="text"
+            name="idNumber"
+            value={formData.idNumber}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border-2 border-gray-400 rounded focus:outline-none focus:border-blue-500"
+            placeholder="000-000-0000"
+          />
+        </div>
+
+        {/* Date of Birth */}
+        <div className="space-y-2">
+          <label className="block text-gray-800 font-semibold text-xl">
+            Date of Birth *
+          </label>
+          <input
+            type="date"
+            name="dateOfBirth"
+            value={formData.dateOfBirth}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border-2 border-gray-400 rounded focus:outline-none focus:border-blue-500"
+          />
+        </div>
+
+        {/* Purpose */}
+        <div className="space-y-2">
+          <label className="block text-gray-800 font-semibold text-xl">
+            Purpose of Request *
+          </label>
+          <select
+            name="purpose"
+            value={formData.purpose}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border-2 border-gray-400 rounded focus:outline-none focus:border-blue-500"
+          >
+            <option value="">Select a purpose...</option>
+            <option value="personal">Personal Use</option>
+            <option value="business">Business Use</option>
+            <option value="official">Official Use</option>
+            <option value="other">Other (Please Specify in Signature)</option>
+          </select>
+        </div>
+
+        {/* Address */}
+        <div className="space-y-2">
+          <label className="block text-gray-800 font-semibold text-xl">
+            Residential Address *
+          </label>
+          <input
+            name="address"
+            value={formData.address}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border-2 border-gray-400 rounded focus:outline-none focus:border-blue-500"
+            placeholder="Street, City, State, ZIP"
+          />
+        </div>
+
+        {/* Signature */}
+        <div className="space-y-2">
+          <label className="block text-gray-800 font-semibold text-xl">
+            Signature (Type your name) *
+          </label>
+          <textarea
+            type="text"
+            name="signature"
+            value={formData.signature}
+            onChange={handleChange}
+            rows="2"
+            className="w-full px-4 py-2 border-2 border-gray-400 rounded focus:outline-none focus:border-blue-500 italic"
+            placeholder="Your signature"
+          />
+        </div>
+
+        {/* Message display */}
+        {message && (
+          <div className={`p-4 rounded-lg text-center ${
+            message.includes('✓')
+              ? 'bg-green-100 text-green-800'
+              : 'bg-red-100 text-red-800'
+          }`}>
+            {message}
           </div>
+        )}
 
-          <div>
-            <label className="block text-gray-700 font-semibold mb-2">
-              Identification Number *
-            </label>
-            <input
-              type="text"
-              name="idNumber"
-              value={formData.idNumber}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border-2 border-gray-400 rounded focus:outline-none focus:border-blue-500"
-              placeholder="000-000-0000"
-            />
-          </div>
-
-          <div>
-            <label className="block text-gray-700 font-semibold mb-2">
-              Date of Birth *
-            </label>
-            <input
-              type="date"
-              name="dateOfBirth"
-              value={formData.dateOfBirth}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border-2 border-gray-400 rounded focus:outline-none focus:border-blue-500"
-            />
-          </div>
-
-          <div>
-            <label className="block text-gray-700 font-semibold mb-2">
-              Purpose of Request *
-            </label>
-            <select
-              name="purpose"
-              value={formData.purpose}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border-2 border-gray-400 rounded focus:outline-none focus:border-blue-500"
-            >
-              <option value="">Select a purpose...</option>
-              <option value="personal">Personal Use</option>
-              <option value="business">Business Use</option>
-              <option value="official">Official Use</option>
-              <option value="other">Other (Please Specify in Address)</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-gray-700 font-semibold mb-2">
-              Residential Address *
-            </label>
-            <textarea
-              name="address"
-              value={formData.address}
-              onChange={handleChange}
-              rows="3"
-              className="w-full px-4 py-2 border-2 border-gray-400 rounded focus:outline-none focus:border-blue-500"
-              placeholder="Street, City, State, ZIP"
-            />
-          </div>
-
-          <div>
-            <label className="block text-gray-700 font-semibold mb-2">
-              Signature (Type your name) *
-            </label>
-            <input
-              type="text"
-              name="signature"
-              value={formData.signature}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border-2 border-gray-400 rounded focus:outline-none focus:border-blue-500 font-cursive italic"
-              placeholder="Your signature"
-            />
-          </div>
-
-          {message && (
-            <div className={`p-4 rounded-lg ${
-              message.includes('✓')
-                ? 'bg-green-100 text-green-800'
-                : 'bg-red-100 text-red-800'
-            }`}>
-              {message}
-            </div>
-          )}
-
+        <div className="flex justify-center mt-4">
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors"
+            className="px-10 py-3 bg-blue-700 text-white text-lg rounded-md hover:bg-blue-800 transition"
           >
-            Submit Form
+            Submit
           </button>
-        </form>
         </div>
-      </div>
-    </GameLayout>
+      </form>
+    </div>
+  </GameLayout>
   );
 };
 

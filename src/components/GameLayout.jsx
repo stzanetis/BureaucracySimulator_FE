@@ -99,7 +99,7 @@ const GameLayout = ({ children }) => {
         </div>
 
         {/* To-Do List */}
-        <div className="flex-1 bg-[#003476] rounded-xl shadow-lg p-5 overflow-y-auto">
+        <div className="bg-[#003476] rounded-xl shadow-lg p-5 overflow-auto flex flex-col max-h-[60vh]">
           <h3 className="text-lg font-bold text-white mb-4">Your To-Do List</h3>
           {tasks && Array.isArray(tasks) && tasks.length > 0 ? (
             <div className="space-y-3">
