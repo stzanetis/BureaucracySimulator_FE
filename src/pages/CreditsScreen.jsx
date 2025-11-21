@@ -23,7 +23,7 @@ const CreditsScreen = () => {
 
   return (
     <div className="min-h-screen bg-[#a1c6ea] flex items-center justify-center p-4">
-      <div className="max-w-xl h-[800px] w-full bg-[#c7ddf2] rounded-3xl shadow-2xl p-8">
+      <div className="max-w-xl h-[800px] w-full bg-[#c7ddf2] rounded-3xl shadow-2xl p-8 flex flex-col">
         <h1 className="text-4xl font-bold text-center text-white text-shadow-md mb-8">About Us</h1>
         
         {loading ? (
@@ -36,7 +36,7 @@ const CreditsScreen = () => {
           </div>
         )}
 
-        <div className="flex justify-center mb-4 mt-[360px]">
+        <div className="flex justify-center mt-auto mb-4">
           <button
             onClick={() => navigate('/')}
             className="bg-[#003476] hover:bg-blue-800 text-white py-4 px-24 rounded-xl"
