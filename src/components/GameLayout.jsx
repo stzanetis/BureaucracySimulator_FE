@@ -1,12 +1,13 @@
 import { useNavigate } from 'react-router-dom';
 import { useGame } from '../context/GameContext';
+import { useState, useEffect } from 'react';
 
 const GameLayout = ({ children }) => {
   const navigate = useNavigate();
-  const { tasks, elapsedTime, formatTime, allTasksCompleted, endGame } = useGame();
+  const { tasks, elapsedTime, formatTime, allTasksCompleted, endGame, currentMessage } = useGame();
 
   // All departments from backend
-  const departments = [
+  const baseDepartments = [
     { id: 1, name: 'Secretary of Bored and Shady Individuals', pageName: 'puzzle-task', taskType: 'PUZZLE' },
     { id: 2, name: 'Department of Unreadable Forms', pageName: 'form-task', taskType: 'FORM' },
     { id: 3, name: 'CAPTCHA Complaints Unit', pageName: 'captcha-task', taskType: 'CAPTCHA' },
@@ -15,21 +16,29 @@ const GameLayout = ({ children }) => {
     { id: 6, name: 'Unjustified Audit Office', pageName: 'display-task', taskType: 'DISPLAY' }
   ];
 
+  // Randomize departments on mount
+  const [departments, setDepartments] = useState([]);
+  
+  useEffect(() => {
+    setDepartments(baseDepartments);
+  }, []);
+
   const handleDepartmentClick = (department) => {
     // Find if user has a task for this department
     const userTask = tasks?.find(task => task.pageName === department.pageName);
     
-    // User has this task, navigate to it
+    // Use taskId if exists, otherwise use 0 (task accessible but won't count toward completion)
+    const taskId = userTask ? userTask.id : 0;
+    
     const routes = {
-        'CAPTCHA': `/game/task/captcha/${userTask.id}`,
-        'FORM': `/game/task/form/${userTask.id}`,
-        'PUZZLE': `/game/task/puzzle/${userTask.id}`,
-        'COFFEE': `/game/task/coffee/${userTask.id}`,
-        'SIGNATURE': `/game/task/signature/${userTask.id}`,
-        'DISPLAY': `/game/task/display/${userTask.id}`,
-        'MISC': `/game/task/generic/${userTask.id}`
+        'CAPTCHA': `/game/task/captcha/${taskId}`,
+        'FORM': `/game/task/form/${taskId}`,
+        'PUZZLE': `/game/task/puzzle/${taskId}`,
+        'COFFEE': `/game/task/coffee/${taskId}`,
+        'SIGNATURE': `/game/task/signature/${taskId}`,
+        'DISPLAY': `/game/task/display/${taskId}`
     };
-    navigate(routes[userTask.taskType] || `/game/task/generic/${userTask.id}`);
+    navigate(routes[department.taskType]);
   };
 
   const handleFinish = () => {
@@ -60,11 +69,11 @@ const GameLayout = ({ children }) => {
           {departments.map((dept) => {
             return (
               <button
-                key={dept.id}
-                onClick={() => handleDepartmentClick(dept)}
-                className='w-full text-left p-3 rounded-lg transition-all'
+              key={dept.id}
+              onClick={() => handleDepartmentClick(dept)}
+              className='w-full hover:bg-[#004c9e] text-left p-3 rounded-lg transition-all hover:shadow-md'
               >
-                <div className="font-medium text-sm">{dept.name}</div>
+              <div className="font-medium text-sm">{dept.name}</div>
               </button>
             );
           })}
@@ -93,56 +102,63 @@ const GameLayout = ({ children }) => {
           </div>
           <div className="m-4 rounded-xl font-medium text-black bg-white p-4 min-h-[6rem] flex items-center justify-center shadow-inner">
             <div className="text-sm text-center leading-relaxed">
-              Welcome! Complete all your assigned tasks.
+              {currentMessage}
             </div>
           </div>
         </div>
 
         {/* To-Do List */}
-        <div className="flex-1 bg-[#003476] rounded-xl shadow-lg p-5 overflow-y-auto">
-          <h3 className="text-lg font-bold text-white mb-4">Your To-Do List</h3>
+        <div className="flex-1 bg-[#003476] rounded-xl shadow-lg p-5 overflow-y-auto flex flex-col">
+          <h3 className="text-2xl font-bold text-white mb-6">Your To-Do List</h3>
           {tasks && Array.isArray(tasks) && tasks.length > 0 ? (
-            <div className="space-y-3">
-              {tasks.map((task, index) => (
-                <div
-                  key={task.id}
-                  className={`p-2 rounded-lg border-2 ${
-                    task.completed
-                      ? 'bg-green-50 border-green-400'
-                      : 'bg-white border-gray-300'
-                  }`}
-                >
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="font-semibold text-gray-800">
-                        Task {index + 1}: {task.taskType}
+            <>
+              <div className="space-y-3 flex-1 overflow-y-auto">
+                {tasks.map((task, index) => (
+                  <div
+                    key={task.id}
+                    className={`p-2 rounded-lg border-2 ${
+                      task.completed
+                        ? 'bg-green-50 border-green-400'
+                        : 'bg-white border-gray-300'
+                    }`}
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="font-semibold text-gray-800">
+                          {
+                            task.taskType === 'PUZZLE' ? 'Confusing Paperwork Reassembly' :
+                            task.taskType === 'FORM' ? 'Nonsensical Data Entry Form' :
+                            task.taskType === 'CAPTCHA' ? 'Prove You\'re Not a Robot (Again)' :
+                            task.taskType === 'COFFEE' ? 'Mandatory Coffee Break Fee' :
+                            task.taskType === 'SIGNATURE' ? 'Sign Here, Here, and Here' :
+                            task.taskType === 'DISPLAY' ? 'Read and Acknowledge Everything' :
+                            task.taskType
+                          }
+                        </div>
                       </div>
-                      <div className="text-sm text-gray-600 mt-1">
-                        {task.pageName?.replace(/-/g, ' ')}
+                      <div className="ml-3">
+                        {task.completed ? (
+                          <span className="text-green-600 font-bold text-xl">✓</span>
+                        ) : (
+                          <span className="text-gray-400 font-bold text-xl">○</span>
+                        )}
                       </div>
-                    </div>
-                    <div className="ml-3">
-                      {task.completed ? (
-                        <span className="text-green-600 font-bold text-xl">✓</span>
-                      ) : (
-                        <span className="text-gray-400 font-bold text-xl">○</span>
-                      )}
                     </div>
                   </div>
-                </div>
-              ))}
-                <button
-                    onClick={handleFinish}
-                    disabled={!allTasksCompleted()}
-                    className={`w-full py-3 px-4 rounded-lg font-semibold transition-all ${
-                        allTasksCompleted()
-                        ? 'bg-green-600 hover:bg-green-700 shadow-lg'
-                        : 'bg-gray-600 cursor-not-allowed opacity-50'
-                    }`}
-                >
-                    Finish
-                </button>
-            </div>
+                ))}
+              </div>
+              <button
+                  onClick={handleFinish}
+                  disabled={!allTasksCompleted()}
+                  className={`w-full py-3 px-4 rounded-lg font-semibold transition-all mt-3 ${
+                      allTasksCompleted()
+                      ? 'bg-green-600 hover:bg-green-700 shadow-lg'
+                      : 'bg-gray-600 cursor-not-allowed opacity-50'
+                  }`}
+              >
+                  Finish
+              </button>
+            </>
           ) : (
             <div className="text-center text-gray-500 py-8">
               No tasks assigned

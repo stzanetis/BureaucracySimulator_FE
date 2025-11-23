@@ -47,13 +47,14 @@ const api = {
   // POST /endscreen/ - Submit statistics for user attempt
   postEndscreen: async (elapsedTime, nickname = 'Anonymous') => {
     const response = await apiClient.post(`/endscreen/?nickname=${encodeURIComponent(nickname)}`, { elapsedTime });
+    console.log(response.data);
     return response.data.data;
   },
 
   // POST /user/ - Submit nickname and seed to get to-do list
   postUser: async (nickname, seed) => {
     const response = await apiClient.post('/user/', { nickname, seed });
-    return response.data.data; // Returns toDoList array directly
+    return response.data.data; // Returns { toDoList, chatbotMessages }
   },
 
   // PUT /user/homescreen/tasks/{taskID} - Submit user input for a specific task

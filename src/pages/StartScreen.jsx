@@ -6,8 +6,9 @@ import {Star, Volume2, VolumeOff, User} from 'lucide-react';
 
 const StartScreen = () => {
     const navigate = useNavigate();
-    const { startGame, setSongList, isMusicOn, toggleMusic } = useGame();
+    const {startGame, setSongList, isMusicOn, toggleMusic } = useGame();
     const [nickname, setNickname] = useState('');
+    const [respo, setRespo] = useState('');
 
     useEffect(() => {
       const fetchSongs = async () => {
@@ -31,8 +32,9 @@ const StartScreen = () => {
 
     try {
       const seed = Math.floor(Math.random() * 10000);
-	    const taskList = await api.postUser(nickname, seed);
-      startGame(nickname, taskList);
+	    const response = await api.postUser(nickname, seed);
+      const messages = (response.chatbotMessages || []).map(msg => msg.text);
+      startGame(nickname, response.toDoList, messages);
       navigate('/game');
     } catch (error) {
       console.error('Error starting game:', error);
@@ -101,6 +103,15 @@ const StartScreen = () => {
 						</button>
 					</div>
 				</div>
+
+        {respo && (
+          <div className="mt-4 p-4 bg-white rounded-xl shadow-md">
+            <pre className="text-sm overflow-auto">
+              {JSON.stringify(respo, null, 2)}
+            </pre>
+          </div>
+        )}
+
 			</div>
 		</div>
 	);

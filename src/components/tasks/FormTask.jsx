@@ -36,14 +36,20 @@ const FormTask = () => {
     }
 
     try {
-      const response = await api.putTaskCheck(taskId, formData);
-      
-      if (response.isTaskCompleted) {
-        updateTaskStatus(parseInt(taskId), true);
+      if (taskId !== '0') {
+        const response = await api.putTaskCheck(taskId, formData);
+        
+        if (response.isTaskCompleted) {
+          updateTaskStatus(parseInt(taskId), true);
+          setMessage('✓ Form accepted! Task completed!');
+          setTimeout(() => navigate('/game'), 2000);
+        } else {
+          setMessage('It seems like the form is filled out incorrectly. Please try again.');
+        }
+      } else {
+        // Not in todolist, just show success
         setMessage('✓ Form accepted! Task completed!');
         setTimeout(() => navigate('/game'), 2000);
-      } else {
-        setMessage('It seems like the form is filled out incorrectly. Please try again.');
       }
     } catch (error) {
       console.error('Error submitting form:', error);

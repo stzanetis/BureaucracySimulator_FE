@@ -21,17 +21,25 @@ const DisplayTask = () => {
 
   const handleAudit = async () => {
     try {
-      const response = await api.putTaskCheck(taskId, { audited: true });
-      
-      if (response.isTaskCompleted) {
-        updateTaskStatus(parseInt(taskId), true);
+      if (taskId !== '0') {
+        const response = await api.putTaskCheck(taskId, { audited: true });
+        
+        if (response.isTaskCompleted) {
+          updateTaskStatus(parseInt(taskId), true);
+          setMessage('✓ Audit complete! Approval stamp granted!');
+          setTimeout(() => navigate('/game'), 2000);
+        }
+      } else {
+        // Not in todolist, just show success
         setMessage('✓ Audit complete! Approval stamp granted!');
         setTimeout(() => navigate('/game'), 2000);
       }
     } catch (error) {
       console.error('Error completing audit:', error);
-      // Complete anyway
-      updateTaskStatus(parseInt(taskId), true);
+      // Complete anyway if in todolist
+      if (taskId !== '0') {
+        updateTaskStatus(parseInt(taskId), true);
+      }
       setMessage('✓ Audit complete! Approval stamp granted!');
       setTimeout(() => navigate('/game'), 2000);
     }

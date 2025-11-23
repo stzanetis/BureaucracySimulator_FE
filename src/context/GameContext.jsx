@@ -18,6 +18,9 @@ export const GameProvider = ({ children }) => {
   const [isGameActive, setIsGameActive] = useState(false);
   const [isMusicOn, setIsMusicOn] = useState(true);
   const [songList, setSongList] = useState([]);
+  const [chatbotMessages, setChatbotMessages] = useState([]);
+  const [currentMessage, setCurrentMessage] = useState('Welcome!');
+  const [shuffledDepartments, setShuffledDepartments] = useState([]);
 	
 	useEffect(() => {
     let interval;
@@ -29,9 +32,25 @@ export const GameProvider = ({ children }) => {
     return () => clearInterval(interval);
   }, [isGameActive]);
 
-  const startGame = (playerNickname, taskList) => {
+  // Cycle chatbot messages every 8 seconds
+  useEffect(() => {
+    if (chatbotMessages.length === 0) return;
+    
+    const messageInterval = setInterval(() => {
+      const randomMessage = chatbotMessages[Math.floor(Math.random() * chatbotMessages.length)];
+      setCurrentMessage(randomMessage);
+    }, 8000);
+
+    return () => clearInterval(messageInterval);
+  }, [chatbotMessages]);
+
+  const startGame = (playerNickname, taskList, messages = []) => {
     setNickname(playerNickname);
     setTasks(taskList);
+    setChatbotMessages(messages);
+    if (messages.length > 0) {
+      setCurrentMessage(messages[Math.floor(Math.random() * messages.length)]);
+    }
     setSeed(Math.floor(Math.random() * 10000));
     setElapsedTime(0);
     setIsGameActive(true);
@@ -47,6 +66,9 @@ export const GameProvider = ({ children }) => {
 		setTasks([]);
 		setElapsedTime(0);
 		setIsGameActive(false);
+		setChatbotMessages([]);
+		setCurrentMessage('Welcome!');
+		setShuffledDepartments([]);
 	};
 
 	const updateTaskStatus = (taskId, completed) => {
@@ -94,6 +116,10 @@ export const GameProvider = ({ children }) => {
     setIsMusicOn,
     songList,
     setSongList,
+    chatbotMessages,
+    setChatbotMessages,
+    currentMessage,
+    setCurrentMessage,
     startGame,
     startTimer,
     endGame,

@@ -105,22 +105,38 @@ const SignatureTask = () => {
     const isGoodEnough = pixelCount > 500;
 
     try {
-      const response = await api.putTaskCheck(taskId, { 
-        signatureQuality: isGoodEnough ? 'good' : 'poor'
-      });
-      
-      if (isGoodEnough || response.isTaskCompleted) {
-        updateTaskStatus(parseInt(taskId), true);
-        setMessage('✓ Signature accepted! Task completed!');
-        setTimeout(() => navigate('/game'), 2000);
+      if (taskId !== '0') {
+        const response = await api.putTaskCheck(taskId, { 
+          signatureQuality: isGoodEnough ? 'good' : 'poor'
+        });
+        
+        if (isGoodEnough || response.isTaskCompleted) {
+          updateTaskStatus(parseInt(taskId), true);
+          setMessage('✓ Signature accepted! Task completed!');
+          setTimeout(() => navigate('/game'), 2000);
+        } else {
+          setMessage('❌ Signature detected as fake! You must start over.');
+          setTimeout(() => {
+            setStage('queue');
+            setMyNumber(null);
+            setQueueNumber(Math.floor(Math.random() * 100));
+            clearCanvas();
+          }, 2000);
+        }
       } else {
-        setMessage('❌ Signature detected as fake! You must start over.');
-        setTimeout(() => {
-          setStage('queue');
-          setMyNumber(null);
-          setQueueNumber(Math.floor(Math.random() * 100));
-          clearCanvas();
-        }, 2000);
+        // Not in todolist, just show success if good enough
+        if (isGoodEnough) {
+          setMessage('✓ Signature accepted! Task completed!');
+          setTimeout(() => navigate('/game'), 2000);
+        } else {
+          setMessage('❌ Signature detected as fake! You must start over.');
+          setTimeout(() => {
+            setStage('queue');
+            setMyNumber(null);
+            setQueueNumber(Math.floor(Math.random() * 100));
+            clearCanvas();
+          }, 2000);
+        }
       }
     } catch (error) {
       console.error('Error submitting signature:', error);

@@ -15,19 +15,28 @@ const PuzzleTask = () => {
 
   const handlePuzzle1Submit = async () => {
     try {
-      const response = await api.putTaskCheck(taskId, { 
-        puzzleNumber: 1,
-        answer: puzzle1Answer 
-      });
-      
-      if (response.isTaskCompleted || puzzle1Answer.toLowerCase() === 'correct') {
+      if (taskId !== '0') {
+        const response = await api.putTaskCheck(taskId, { 
+          puzzleNumber: 1,
+          answer: puzzle1Answer 
+        });
+        
+        if (response.isTaskCompleted || puzzle1Answer.toLowerCase() === 'correct') {
+          setMessage('✓ Puzzle 1 complete! Moving to Puzzle 2...');
+          setTimeout(() => {
+            setCurrentPuzzle(2);
+            setMessage('');
+          }, 1500);
+        } else {
+          setMessage('Incorrect answer. Try again!');
+        }
+      } else {
+        // Not in todolist, just proceed
         setMessage('✓ Puzzle 1 complete! Moving to Puzzle 2...');
         setTimeout(() => {
           setCurrentPuzzle(2);
           setMessage('');
         }, 1500);
-      } else {
-        setMessage('Incorrect answer. Try again!');
       }
     } catch (error) {
       console.error('Error submitting puzzle 1:', error);
@@ -37,17 +46,23 @@ const PuzzleTask = () => {
 
   const handlePuzzle2Submit = async () => {
     try {
-      const response = await api.putTaskCheck(taskId, { 
-        puzzleNumber: 2,
-        answer: puzzle2Answer 
-      });
-      
-      if (response.isTaskCompleted || puzzle2Answer.toLowerCase() === 'correct') {
-        updateTaskStatus(parseInt(taskId), true);
+      if (taskId !== '0') {
+        const response = await api.putTaskCheck(taskId, { 
+          puzzleNumber: 2,
+          answer: puzzle2Answer 
+        });
+        
+        if (response.isTaskCompleted || puzzle2Answer.toLowerCase() === 'correct') {
+          updateTaskStatus(parseInt(taskId), true);
+          setMessage('✓ All puzzles completed! Task finished!');
+          setTimeout(() => navigate('/game'), 2000);
+        } else {
+          setMessage('Incorrect answer. Try again!');
+        }
+      } else {
+        // Not in todolist, just show success
         setMessage('✓ All puzzles completed! Task finished!');
         setTimeout(() => navigate('/game'), 2000);
-      } else {
-        setMessage('Incorrect answer. Try again!');
       }
     } catch (error) {
       console.error('Error submitting puzzle 2:', error);
