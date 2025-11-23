@@ -8,7 +8,6 @@ const StartScreen = () => {
     const navigate = useNavigate();
     const {startGame, setSongList, isMusicOn, toggleMusic } = useGame();
     const [nickname, setNickname] = useState('');
-    const [respo, setRespo] = useState('');
 
     useEffect(() => {
       const fetchSongs = async () => {
@@ -83,35 +82,26 @@ const StartScreen = () => {
 					<div className="flex items-center gap-4">
 						<button
 							onClick={handleLeaderboardClick}
-							className="w-10 h-10 rounded-full bg-[#003476] hover:bg-blue-80 text-white flex items-center justify-center shadow-md"
+							className="w-10 h-10 rounded-full bg-[#003476] hover:bg-blue-800 text-white flex items-center justify-center shadow-md"
 						>
 							<Star size={16} />
 						</button>
 
 						<button
 							onClick={handleCreditsClick}
-							className="w-10 h-10 rounded-full bg-[#003476] hover:bg-blue-80 text-white flex items-center justify-center shadow-md"
+							className="w-10 h-10 rounded-full bg-[#003476] hover:bg-blue-800 text-white flex items-center justify-center shadow-md"
 						>
 							<User size={16} />
 						</button>
 
 						<button
 							onClick={toggleMusic}
-							className="w-10 h-10 rounded-full bg-[#003476] hover:bg-blue-80 text-white flex items-center justify-center shadow-md"
+							className="w-10 h-10 rounded-full bg-[#003476] hover:bg-blue-800 text-white flex items-center justify-center shadow-md"
 						>
 							{isMusicOn ? <Volume2 size={16} /> : <VolumeOff size={16} />}
 						</button>
 					</div>
 				</div>
-
-        {respo && (
-          <div className="mt-4 p-4 bg-white rounded-xl shadow-md">
-            <pre className="text-sm overflow-auto">
-              {JSON.stringify(respo, null, 2)}
-            </pre>
-          </div>
-        )}
-
 			</div>
 		</div>
 	);

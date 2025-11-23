@@ -91,7 +91,6 @@ const CoffeeTask = () => {
         if (response.isTaskCompleted) {
           updateTaskStatus(parseInt(taskId), true);
           setMessage('✓ File accepted! Approval stamp granted!');
-          setTimeout(() => navigate('/game'), 2000);
         } else {
           setMessage('File rejected. Please try again.');
         }

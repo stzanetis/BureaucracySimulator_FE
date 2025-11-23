@@ -55,14 +55,12 @@ const PuzzleTask = () => {
         if (response.isTaskCompleted || puzzle2Answer.toLowerCase() === 'correct') {
           updateTaskStatus(parseInt(taskId), true);
           setMessage('✓ All puzzles completed! Task finished!');
-          setTimeout(() => navigate('/game'), 2000);
         } else {
           setMessage('Incorrect answer. Try again!');
         }
       } else {
         // Not in todolist, just show success
         setMessage('✓ All puzzles completed! Task finished!');
-        setTimeout(() => navigate('/game'), 2000);
       }
     } catch (error) {
       console.error('Error submitting puzzle 2:', error);

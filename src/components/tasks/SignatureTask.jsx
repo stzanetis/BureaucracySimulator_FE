@@ -113,7 +113,6 @@ const SignatureTask = () => {
         if (isGoodEnough || response.isTaskCompleted) {
           updateTaskStatus(parseInt(taskId), true);
           setMessage('✓ Signature accepted! Task completed!');
-          setTimeout(() => navigate('/game'), 2000);
         } else {
           setMessage('❌ Signature detected as fake! You must start over.');
           setTimeout(() => {
@@ -127,7 +126,6 @@ const SignatureTask = () => {
         // Not in todolist, just show success if good enough
         if (isGoodEnough) {
           setMessage('✓ Signature accepted! Task completed!');
-          setTimeout(() => navigate('/game'), 2000);
         } else {
           setMessage('❌ Signature detected as fake! You must start over.');
           setTimeout(() => {

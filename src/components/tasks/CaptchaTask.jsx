@@ -105,7 +105,6 @@ const CaptchaTask = () => {
       updateTaskStatus(parseInt(taskId), true);
     }
     setMessage('✓ Task Completed!');
-    setTimeout(() => navigate('/game'), 2000);
   };
 
   return (
