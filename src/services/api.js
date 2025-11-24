@@ -78,6 +78,30 @@ const api = {
   getTaskPaymentStatus: async () => {
     const response = await apiClient.get('/user/homescreen/tasks/9/payment-portal/');
     return response.data.data;
+  },
+
+  //FORM TASK: PUT /user/homescreen/tasks/{taskID}/form-check - Submit user input
+  putFormTaskCheck: async (taskID, userInput) => {
+    const response = await apiClient.put(`/user/homescreen/tasks/${taskID}/form-check`, { userInput });
+    return response.data.data;
+  },
+
+  // FORM TASK: GET /user/homescreen/tasks/{taskID}/form - Get form data
+  getFormTask: async (taskID) => {
+    const response = await apiClient.get(`/user/homescreen/tasks/${taskID}/form`);
+    return response.data.data;
+  },
+
+  //PUZZLE TASK: PUT /user/homescreen/tasks/{taskID}/puzzle-check - Submit user input
+  putPuzzleTaskCheck: async (taskID, userInput) => {
+    const response = await apiClient.put(`/user/homescreen/tasks/${taskID}/puzzle-check`, userInput );
+    return response.data.data;
+  },
+
+  // PUZZLE TASK: GET /user/homescreen/tasks/{taskID}/puzzle - Get puzzle data
+  getPuzzleTask: async (taskID) => {
+    const response = await apiClient.get(`/user/homescreen/tasks/${taskID}/puzzle`);
+    return response.data.data;
   }
 };
 
