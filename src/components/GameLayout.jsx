@@ -7,8 +7,8 @@ const GameLayout = ({ children }) => {
 
   // All departments from backend
   const departments = [
-    { id: 1, name: 'Secretary of Bored and Shady Individuals', pageName: 'puzzle-task', taskType: 'PUZZLE' },
-    { id: 2, name: 'Department of Unreadable Forms', pageName: 'form-task', taskType: 'FORM' },
+    { id: 1, name: 'Substantiation and Justification Sector', pageName: 'puzzle-task', taskType: 'PUZZLE' },
+    { id: 2, name: 'Department of Verification and Validation', pageName: 'form-task', taskType: 'FORM' },
     { id: 3, name: 'CAPTCHA Complaints Unit', pageName: 'captcha-task', taskType: 'CAPTCHA' },
     { id: 4, name: 'Secretariat of Drowsiness', pageName: 'coffee-task', taskType: 'COFFEE' },
     { id: 5, name: 'Serious Headquarters of Seriousness', pageName: 'signature-task', taskType: 'SIGNATURE' },
@@ -99,7 +99,7 @@ const GameLayout = ({ children }) => {
         </div>
 
         {/* To-Do List */}
-        <div className="flex-1 bg-[#003476] rounded-xl shadow-lg p-5 overflow-y-auto">
+        <div className="bg-[#003476] rounded-xl shadow-lg p-5 overflow-auto flex flex-col max-h-[60vh]">
           <h3 className="text-lg font-bold text-white mb-4">Your To-Do List</h3>
           {tasks && Array.isArray(tasks) && tasks.length > 0 ? (
             <div className="space-y-3">

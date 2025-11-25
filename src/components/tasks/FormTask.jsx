@@ -8,36 +8,56 @@ const FormTask = () => {
   const navigate = useNavigate();
   const { taskId } = useParams();
   const { updateTaskStatus } = useGame();
-  const [formData, setFormData] = useState({
-    fullName: '',
-    idNumber: '',
-    dateOfBirth: '',
-    purpose: '',
-    address: '',
-    signature: ''
-  });
+  const [formConfig, setFormConfig] = useState(null);
+  const [formData, setFormData] = useState({});
   const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(true);
 
+  // FETCH FORM DEFINITION FROM BACKEND
+  useEffect(() => {
+    const fetchForm = async () => {
+      try {
+        const res = await api.getFormTask(taskId);
+        setFormConfig(res);
+
+        const init = {};
+        res.fields.forEach(f => init[f.name] = '');
+        setFormData(init);
+
+      } catch (err) {
+        console.error('Error loading form:', err);
+        setMessage('Failed to load form.');
+      }
+      setLoading(false);
+    };
+
+    fetchForm();
+  }, [taskId]);
+
+  // HANDLE INPUT CHANGE DYNAMICALLY
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
+    setFormData(prev => ({
+      ...prev,
       [e.target.name]: e.target.value
-    });
+    }));
   };
 
+  // SUBMIT HANDLER (keeps your logic exactly)
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Check if all fields are filled
-    const allFilled = Object.values(formData).every(val => val.trim() !== '');
+    const allFilled = formConfig.fields.every(f => {
+      if (!f.required) return true;
+      return formData[f.name].trim() !== '';
+    });
+
     if (!allFilled) {
       setMessage('Please fill out all fields!');
       return;
     }
 
     try {
-      const response = await api.putTaskCheck(taskId, formData);
-      
+      const response = await api.putFormTaskCheck(taskId, formData);
       if (response.isTaskCompleted) {
         updateTaskStatus(parseInt(taskId), true);
         setMessage('✓ Form accepted! Task completed!');
@@ -51,104 +71,116 @@ const FormTask = () => {
     }
   };
 
+  // RENDER EACH FIELD BASED ON ITS TYPE
+  const renderField = (field) => {
+    const base =
+      "w-full px-4 py-2 border-2 border-gray-400 rounded " +
+      "focus:outline-none focus:border-blue-500";
+
+    switch (field.type) {
+      case "text":
+        return (
+          <input
+            type="text"
+            name={field.name}
+            value={formData[field.name] || ""}
+            onChange={handleChange}
+            placeholder={field.placeholder || ""}
+            className={base}
+          />
+        );
+
+      case "date":
+        return (
+          <input
+            type="date"
+            name={field.name}
+            value={formData[field.name] || ""}
+            onChange={handleChange}
+            className={base}
+          />
+        );
+
+      case "textarea":
+        return (
+          <textarea
+            name={field.name}
+            value={formData[field.name] || ""}
+            onChange={handleChange}
+            rows="2"
+            className={base}
+            placeholder={field.placeholder || ""}
+          />
+        );
+
+      case "select":
+        return (
+          <select
+            name={field.name}
+            value={formData[field.name] || ""}
+            onChange={handleChange}
+            className={base}
+          >
+            <option value="">Select...</option>
+            {field.options.map(opt => (
+              <option key={opt} value={opt}>{opt}</option>
+            ))}
+          </select>
+        );
+
+      default:
+        return (
+          <input
+            type="text"
+            name={field.name}
+            value={formData[field.name] || ""}
+            onChange={handleChange}
+            className={base}
+          />
+        );
+    }
+  };
+
+  //  SHOW LOADING
+  if (loading || !formConfig) {
+    return (
+      <GameLayout>
+        <div className="p-8 text-xl text-gray-700">Loading form...</div>
+      </GameLayout>
+    );
+  }
+
   return (
     <GameLayout>
       <div className="p-8">
-        <div className="max-w-xl mx-auto bg-white rounded-lg shadow-lg p-8">
 
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">Official Form 27B-6</h1>
-        <p className="text-gray-600 mb-6">Please complete this form with accurate information.</p>
+        {/* === HEADER === */}
+        <h1 className="text-5xl font-bold text-gray-800 mb-2">
+          {formConfig.formTitle}
+        </h1>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-gray-700 font-semibold mb-2">
-              Full Legal Name *
-            </label>
-            <input
-              type="text"
-              name="fullName"
-              value={formData.fullName}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border-2 border-gray-400 rounded focus:outline-none focus:border-blue-500"
-              placeholder="First Middle Last"
-            />
-          </div>
+        <hr className="h-1 bg-gray-700 mt-3 mb-6" />
 
-          <div>
-            <label className="block text-gray-700 font-semibold mb-2">
-              Identification Number *
-            </label>
-            <input
-              type="text"
-              name="idNumber"
-              value={formData.idNumber}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border-2 border-gray-400 rounded focus:outline-none focus:border-blue-500"
-              placeholder="000-000-0000"
-            />
-          </div>
+        {/* === DESCRIPTION === */}
+        <p className="text-gray-700 text-xl max-w-3xl mb-5">
+          {formConfig.description}
+        </p>
 
-          <div>
-            <label className="block text-gray-700 font-semibold mb-2">
-              Date of Birth *
-            </label>
-            <input
-              type="date"
-              name="dateOfBirth"
-              value={formData.dateOfBirth}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border-2 border-gray-400 rounded focus:outline-none focus:border-blue-500"
-            />
-          </div>
+        {/* === DYNAMIC FORM FIELDS === */}
+        <form onSubmit={handleSubmit} className="max-w-3xl mx-auto space-y-5">
 
-          <div>
-            <label className="block text-gray-700 font-semibold mb-2">
-              Purpose of Request *
-            </label>
-            <select
-              name="purpose"
-              value={formData.purpose}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border-2 border-gray-400 rounded focus:outline-none focus:border-blue-500"
-            >
-              <option value="">Select a purpose...</option>
-              <option value="personal">Personal Use</option>
-              <option value="business">Business Use</option>
-              <option value="official">Official Use</option>
-              <option value="other">Other (Please Specify in Address)</option>
-            </select>
-          </div>
+          {formConfig.fields.map(field => (
+            <div key={field.name} className="space-y-2">
+              <label className="block text-gray-800 font-semibold text-xl">
+                {field.label} {field.required && "*"}
+              </label>
+              {renderField(field)}
+            </div>
+          ))}
 
-          <div>
-            <label className="block text-gray-700 font-semibold mb-2">
-              Residential Address *
-            </label>
-            <textarea
-              name="address"
-              value={formData.address}
-              onChange={handleChange}
-              rows="3"
-              className="w-full px-4 py-2 border-2 border-gray-400 rounded focus:outline-none focus:border-blue-500"
-              placeholder="Street, City, State, ZIP"
-            />
-          </div>
-
-          <div>
-            <label className="block text-gray-700 font-semibold mb-2">
-              Signature (Type your name) *
-            </label>
-            <input
-              type="text"
-              name="signature"
-              value={formData.signature}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border-2 border-gray-400 rounded focus:outline-none focus:border-blue-500 font-cursive italic"
-              placeholder="Your signature"
-            />
-          </div>
-
+          {/* === MESSAGE === */}
           {message && (
-            <div className={`p-4 rounded-lg ${
+            <div className={`p-4 rounded-lg text-center ${
               message.includes('✓')
                 ? 'bg-green-100 text-green-800'
                 : 'bg-red-100 text-red-800'
@@ -157,14 +189,16 @@ const FormTask = () => {
             </div>
           )}
 
-          <button
-            type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors"
-          >
-            Submit Form
-          </button>
+          {/* === SUBMIT BUTTON === */}
+          <div className="flex justify-center mt-4">
+            <button
+              type="submit"
+              className="px-10 py-3 bg-blue-700 text-white text-lg rounded-md hover:bg-blue-800 transition"
+            >
+              Submit
+            </button>
+          </div>
         </form>
-        </div>
       </div>
     </GameLayout>
   );
