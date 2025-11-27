@@ -9,29 +9,30 @@ const PuzzleTask = () => {
   const { taskId } = useParams();
   const { updateTaskStatus } = useGame();
 
-  const [puzzles, setPuzzles] = useState(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [answer, setAnswer] = useState("");
-  const [message, setMessage] = useState("");
-
-  // HARD-CODED TITLE + DESCRIPTION
-  const pageTitle = "Mental Coherence Review";
-  const pageDescription =
-    "As part of your routine evaluative review and in accordance with Regulation 14-R on Authorized Thought Patterns, all participants must undergo a brief cognitive alignment check to ensure ongoing compatibility with departmental standards.\nYou are instructed to fulfill the following cognitive verification test." + 
-    "\nYour responses will be reviewed to confirm that reasoning deviations remain within acceptable administrative thresholds." + 
-    "\nFailure to provide sufficiently coherent responses may result in additional clarification procedures." +
-    "\n\nComplete the following puzzles to proceed.";
-
-  // LOAD PUZZLES FROM BACKEND
-  useEffect(() => {
-    const load = async () => {
-      try {
-        const res = await api.getPuzzleTask(taskId);
-        console.log("API response:", res);
-
-        setPuzzles(res.puzzles);
-      } catch (err) {
-        console.error("Error loading puzzle:", err);
+  const handlePuzzle1Submit = async () => {
+    try {
+      if (taskId !== '0') {
+        const response = await api.putTaskCheck(taskId, { 
+          puzzleNumber: 1,
+          answer: puzzle1Answer 
+        });
+        
+        if (response.isTaskCompleted || puzzle1Answer.toLowerCase() === 'correct') {
+          setMessage('✓ Puzzle 1 complete! Moving to Puzzle 2...');
+          setTimeout(() => {
+            setCurrentPuzzle(2);
+            setMessage('');
+          }, 1500);
+        } else {
+          setMessage('Incorrect answer. Try again!');
+        }
+      } else {
+        // Not in todolist, just proceed
+        setMessage('✓ Puzzle 1 complete! Moving to Puzzle 2...');
+        setTimeout(() => {
+          setCurrentPuzzle(2);
+          setMessage('');
+        }, 1500);
       }
     };
     load();
@@ -49,30 +50,21 @@ const PuzzleTask = () => {
 
   const handleSubmit = async () => {
     try {
-      const res = await api.putPuzzleTaskCheck(taskId, {
-        puzzleNumber: currentPuzzle.id,
-        puzzleKey: currentPuzzle.puzzleKey,
-        answer: answer.trim()
-      });
-
-      if (res.isTaskCompleted) {
-        // LAST PUZZLE COMPLETED
-        if (currentIndex === puzzles.length - 1) {
-          setMessage("✓ All puzzles completed! Returning…");
+      if (taskId !== '0') {
+        const response = await api.putTaskCheck(taskId, { 
+          puzzleNumber: 2,
+          answer: puzzle2Answer 
+        });
+        
+        if (response.isTaskCompleted || puzzle2Answer.toLowerCase() === 'correct') {
           updateTaskStatus(parseInt(taskId), true);
-
-          setTimeout(() => navigate("/game"), 1800);
+          setMessage('✓ All puzzles completed! Task finished!');
         } else {
-          // Move to next puzzle
-          setMessage(`✓ Puzzle ${currentPuzzle.id} complete!`);
-          setTimeout(() => {
-            setCurrentIndex((prev) => prev + 1);
-            setAnswer("");
-            setMessage("");
-          }, 1200);
+          setMessage('Incorrect answer. Try again!');
         }
       } else {
-        setMessage("Incorrect answer. Try again.");
+        // Not in todolist, just show success
+        setMessage('✓ All puzzles completed! Task finished!');
       }
     } catch (err) {
       console.error("Submit error:", err);

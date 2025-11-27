@@ -11,7 +11,6 @@ import PuzzleTask from './components/tasks/PuzzleTask';
 import CoffeeTask from './components/tasks/CoffeeTask';
 import SignatureTask from './components/tasks/SignatureTask';
 import DisplayTask from './components/tasks/DisplayTask';
-import GenericTask from './components/tasks/GenericTask';
 
 function App() {
   return (
@@ -31,11 +30,6 @@ function App() {
           <Route path="/game/task/coffee/:taskId" element={<CoffeeTask />} />
           <Route path="/game/task/signature/:taskId" element={<SignatureTask />} />
           <Route path="/game/task/display/:taskId" element={<DisplayTask />} />
-          <Route path="/game/task/generic/:taskId" element={<GenericTask />} />
-          <Route path="/game/task/form-compliance/:taskId" element={<GenericTask />} />
-          <Route path="/game/task/authentication/:taskId" element={<GenericTask />} />
-          <Route path="/game/task/administrative/:taskId" element={<GenericTask />} />
-          <Route path="/game/task/contribution/:taskId" element={<GenericTask />} />
         </Routes>
       </Router>
     </GameProvider>

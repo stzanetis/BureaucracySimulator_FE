@@ -57,7 +57,9 @@ const CaptchaTask = () => {
     if (newCount >= 15) {
       setMessage('✓ System Override Detected! Task Completed!');
       setTimeout(async () => {
-        await api.putTaskCheck(taskId, { override: true });
+        if (taskId !== '0') {
+          await api.putTaskCheck(taskId, { override: true });
+        }
         handleComplete();
       }, 1000);
       return;
@@ -81,8 +83,10 @@ const CaptchaTask = () => {
         correctIds.every((id, index) => id === selectedSorted[index]);
 
       if (isCorrect) {
-        // Submit to backend to mark task as complete
-        await api.putTaskCheck(taskId, { selectedImages });
+        // Submit to backend to mark task as complete (only if in todolist)
+        if (taskId !== '0') {
+          await api.putTaskCheck(taskId, { selectedImages });
+        }
         handleComplete();
       } else {
         setMessage('Incorrect! Please try again.');
@@ -97,9 +101,10 @@ const CaptchaTask = () => {
   };
 
   const handleComplete = () => {
-    updateTaskStatus(parseInt(taskId), true);
+    if (taskId !== '0') {
+      updateTaskStatus(parseInt(taskId), true);
+    }
     setMessage('✓ Task Completed!');
-    setTimeout(() => navigate('/game'), 2000);
   };
 
   return (

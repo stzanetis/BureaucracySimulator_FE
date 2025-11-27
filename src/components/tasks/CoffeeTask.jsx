@@ -82,17 +82,22 @@ const CoffeeTask = () => {
     }
 
     try {
-      const response = await api.putTaskCheck(taskId, { 
-        fileName: file.name,
-        fileType: file.type 
-      });
-      
-      if (response.isTaskCompleted) {
-        updateTaskStatus(parseInt(taskId), true);
+      if (taskId !== '0') {
+        const response = await api.putTaskCheck(taskId, { 
+          fileName: file.name,
+          fileType: file.type 
+        });
+        
+        if (response.isTaskCompleted) {
+          updateTaskStatus(parseInt(taskId), true);
+          setMessage('✓ File accepted! Approval stamp granted!');
+        } else {
+          setMessage('File rejected. Please try again.');
+        }
+      } else {
+        // Not in todolist, just show success
         setMessage('✓ File accepted! Approval stamp granted!');
         setTimeout(() => navigate('/game'), 2000);
-      } else {
-        setMessage('File rejected. Please try again.');
       }
     } catch (error) {
       console.error('Error submitting file:', error);

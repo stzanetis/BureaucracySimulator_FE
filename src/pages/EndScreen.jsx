@@ -5,11 +5,14 @@ import api from '../services/api';
 
 const EndScreen = () => {
     const navigate = useNavigate();
-    const { elapsedTime, resetGame, nickname, formatTimeInSeconds } = useGame();
+    const { elapsedTime, resetGame, nickname, formatTimeInSeconds, endGame } = useGame();
     const [percentile, setPercentile] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        // Stop the timer when EndScreen loads
+        endGame();
+
         const submitScore = async () => {
             const finalTimeSeconds = formatTimeInSeconds(elapsedTime);
             
@@ -25,8 +28,7 @@ const EndScreen = () => {
         };
 
         submitScore();
-    }, [elapsedTime, nickname, formatTimeInSeconds]);
-
+    }, [elapsedTime, nickname, formatTimeInSeconds, endGame]);
 
     const handleViewLeaderboard = () => {
         navigate('/leaderboard');
@@ -50,38 +52,46 @@ const EndScreen = () => {
 
     return (
         <div className="min-h-screen bg-[#a1c6ea] flex items-center justify-center p-4">
-            <div className="max-w-xl h-[800px] w-full bg-[#c7ddf2] rounded-3xl shadow-2xl p-8 flex flex-col items-center">
+            <div className="max-w-xl h-[800px] w-full bg-[#c7ddf2] rounded-3xl shadow-2xl p-8 flex flex-col items-center justify-between">
                 
-                {/* Logo */}
-                <div className="flex justify-center mb-16 mt-16">
-                    <img src="/Logo.png" alt="Bureaucracy Simulator" className="h-48 object-contain" />
-                </div>
+                <div className="flex flex-col items-center w-full">
+                    {/* Logo */}
+                    <div className="flex justify-center mb-16 mt-16">
+                        <img src="/Logo.png" alt="Bureaucracy Simulator" className="h-48 object-contain" />
+                    </div>
 
-                {/* Title */}
-                <h1 className="text-4xl font-bold text-center text-[#003476] font-cursive mb-6">
-                    Congratulations
-                </h1>
-                <h2 className="text-4xl font-bold text-center text-[#003476] font-cursive mb-12">
-                    you made it!
-                </h2>
+                    {/* Title */}
+                    <h1 className="text-4xl font-bold text-center text-[#003476] font-cursive mb-6">
+                        Congratulations
+                    </h1>
+                    <h2 className="text-4xl font-bold text-center text-[#003476] font-cursive mb-12">
+                        you made it!
+                    </h2>
 
-                {/* Statistics Message */}
-                <div className="text-center text-gray-700 text-lg leading-relaxed mb-16">
-                    Your score of <span className="text-[#003476] font-bold">{formattedScore}</span> places you in the top <span className="text-[#003476] font-bold">{displayPercentile}%</span> of players.
+                    {/* Statistics Message */}
+                    <div className="text-center text-gray-700 text-lg leading-relaxed">
+                        Your score of <span className="text-[#003476] font-bold">{formattedScore}</span> places you in the top <span className="text-[#003476] font-bold">{displayPercentile}%</span> of players.
+                    </div>
                 </div>
 
                 {/* Action Buttons */}
-                <div className="space-y-4 w-64 mt-auto mb-16"> 
+                <div className="space-y-4 w-64 mb-8"> 
                     
                     {/* View Leaderboard */}
                     <button
                         onClick={handleViewLeaderboard}
-                        className="w-full bg-[#3c763d] hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-xl transition-colors"
+                        className="w-full bg-[#003476] hover:bg-blue-800 text-white font-semibold py-3 px-6 rounded-xl transition-colors"
                     >
                         View the Leaderboard
                     </button>
                     
-                    {/* Return to Start - Κρατάμε αυτό ως Play Again/Start New Game */}
+                    {/* Play Again */}
+                    <button
+                        onClick={handleReturnToStart}
+                        className="w-full bg-[#003476] hover:bg-blue-800 text-white font-semibold py-3 px-6 rounded-xl transition-colors"
+                    >
+                        Play Again
+                    </button>
                     
                 </div>
             </div>
