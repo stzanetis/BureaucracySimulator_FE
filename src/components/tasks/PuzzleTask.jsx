@@ -8,34 +8,29 @@ const PuzzleTask = () => {
   const navigate = useNavigate();
   const { taskId } = useParams();
   const { updateTaskStatus } = useGame();
+  
+  const [puzzles, setPuzzles] = useState(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [answer, setAnswer] = useState('');
+  const [message, setMessage] = useState('');
+  const [pageTitle, setPageTitle] = useState('Complete the Puzzles');
+  const [pageDescription, setPageDescription] = useState('Solve all puzzles to complete this task.');
 
-  const handlePuzzle1Submit = async () => {
-    try {
-      if (taskId !== '0') {
-        const response = await api.putTaskCheck(taskId, { 
-          puzzleNumber: 1,
-          answer: puzzle1Answer 
-        });
-        
-        if (response.isTaskCompleted || puzzle1Answer.toLowerCase() === 'correct') {
-          setMessage('✓ Puzzle 1 complete! Moving to Puzzle 2...');
-          setTimeout(() => {
-            setCurrentPuzzle(2);
-            setMessage('');
-          }, 1500);
-        } else {
-          setMessage('Incorrect answer. Try again!');
+  useEffect(() => {
+    const fetchPuzzles = async () => {
+      try {
+        if (taskId && taskId !== '0') {
+          const response = await api.getPuzzleTask(taskId);
+          setPuzzles(response.puzzles || []);
+          setPageTitle(response.title || 'Complete the Puzzles');
+          setPageDescription(response.description || 'Solve all puzzles to complete this task.');
         }
-      } else {
-        // Not in todolist, just proceed
-        setMessage('✓ Puzzle 1 complete! Moving to Puzzle 2...');
-        setTimeout(() => {
-          setCurrentPuzzle(2);
-          setMessage('');
-        }, 1500);
+      } catch (err) {
+        console.error('Error loading puzzles:', err);
       }
     };
-    load();
+    
+    fetchPuzzles();
   }, [taskId]);
 
   if (!puzzles) {
@@ -50,21 +45,45 @@ const PuzzleTask = () => {
 
   const handleSubmit = async () => {
     try {
-      if (taskId !== '0') {
+      if (taskId && taskId !== '0') {
         const response = await api.putTaskCheck(taskId, { 
-          puzzleNumber: 2,
-          answer: puzzle2Answer 
+          puzzleNumber: currentIndex + 1,
+          answer: answer 
         });
         
-        if (response.isTaskCompleted || puzzle2Answer.toLowerCase() === 'correct') {
-          updateTaskStatus(parseInt(taskId), true);
-          setMessage('✓ All puzzles completed! Task finished!');
+        if (response.isTaskCompleted || answer.toLowerCase() === currentPuzzle.answer.toLowerCase()) {
+          if (currentIndex < puzzles.length - 1) {
+            setMessage('✓ Correct! Moving to next puzzle...');
+            setTimeout(() => {
+              setCurrentIndex(currentIndex + 1);
+              setAnswer('');
+              setMessage('');
+            }, 1500);
+          } else {
+            updateTaskStatus(parseInt(taskId), true);
+            setMessage('✓ All puzzles completed! Task finished!');
+            setTimeout(() => navigate('/game'), 2000);
+          }
         } else {
           setMessage('Incorrect answer. Try again!');
         }
       } else {
-        // Not in todolist, just show success
-        setMessage('✓ All puzzles completed! Task finished!');
+        // Not in todolist, just check answer
+        if (answer.toLowerCase() === currentPuzzle.answer.toLowerCase()) {
+          if (currentIndex < puzzles.length - 1) {
+            setMessage('✓ Correct! Moving to next puzzle...');
+            setTimeout(() => {
+              setCurrentIndex(currentIndex + 1);
+              setAnswer('');
+              setMessage('');
+            }, 1500);
+          } else {
+            setMessage('✓ All puzzles completed! Task finished!');
+            setTimeout(() => navigate('/game'), 2000);
+          }
+        } else {
+          setMessage('Incorrect answer. Try again!');
+        }
       }
     } catch (err) {
       console.error("Submit error:", err);

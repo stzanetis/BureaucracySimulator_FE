@@ -71,7 +71,8 @@ const api = {
 
   // GET /user/homescreen/tasks/{taskID}/ - Get a specific task
   getTaskById: async (taskID) => {
-    const response = await apiClient.get(`/user/homescreen/tasks/${taskID}/`);
+    const actualTaskID = taskID === '0' ? '4' : taskID;
+    const response = await apiClient.get(`/user/homescreen/tasks/${actualTaskID}/`);
     return response.data.data;
   },
 
@@ -89,7 +90,8 @@ const api = {
 
   // FORM TASK: GET /user/homescreen/tasks/{taskID}/form - Get form data
   getFormTask: async (taskID) => {
-    const response = await apiClient.get(`/user/homescreen/tasks/${taskID}/form`);
+    const actualTaskID = taskID === '0' ? '2' : taskID;
+    const response = await apiClient.get(`/user/homescreen/tasks/${actualTaskID}/form`);
     return response.data.data;
   },
 
@@ -101,7 +103,8 @@ const api = {
 
   // PUZZLE TASK: GET /user/homescreen/tasks/{taskID}/puzzle - Get puzzle data
   getPuzzleTask: async (taskID) => {
-    const response = await apiClient.get(`/user/homescreen/tasks/${taskID}/puzzle`);
+    const actualTaskID = taskID === '0' ? '6' : taskID;
+    const response = await apiClient.get(`/user/homescreen/tasks/${actualTaskID}/puzzle`);
     return response.data.data;
   }
 };
