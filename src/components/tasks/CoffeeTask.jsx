@@ -32,7 +32,7 @@ const CoffeeTask = () => {
         }
         return prev + 1;
       });
-    }, 100);
+    }, 200);
   };
 
   const handleSkipQueue = () => {
@@ -46,7 +46,7 @@ const CoffeeTask = () => {
         setStage('bribery-success');
       } else {
         // Open payment portal
-        window.open('https://www.buymeacoffee.com', '_blank');
+        window.open('https://www.buymeacoffee.com/bureaucracy', '_blank');
         setTimeout(() => {
           setStage('bribery-success');
         }, 3000);
@@ -108,153 +108,176 @@ const CoffeeTask = () => {
   return (
     <GameLayout>
       <div className="p-8">
-        <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-4">
+
+        {/* === HEADER: Title + Line === */}
+        <h1 className="text-5xl font-bold text-gray-800 mb-2">
           Secretariat of Drowsiness
         </h1>
+        <hr className="h-1 bg-gray-700 mt-3 mb-6"/>
 
-        {stage === 'queue' && (
-          <div>
-            <p className="text-gray-700 mb-6">
-              You need an approval stamp. Please take a number and wait in the queue.
+        {/* === MAIN CONTENT ROW === */}
+        <div className="flex justify-between items-start gap-8">
+
+          {/* LEFT TEXT BLOCK */}
+          <div className="flex-1 text-xl text-gray-700 leading-relaxed space-y-8">
+            <p>
+              Welcome to our lax department... Please be aware that our staff is currently experiencing a high volume of requests, and wait times may be substantial. We ask for your patience and understanding during this process.
             </p>
+            <p>
+              For those who wish to expedite their service, alternative arrangements may be available through informal channels. However, we remind all visitors that such transactions are entirely at their own discretion and risk.
+            </p>
+          </div>
 
-            <div className="bg-yellow-50 border-2 border-yellow-400 rounded-lg p-6 mb-6">
-              <div className="text-center mb-4">
-                <div className="text-sm text-gray-600 mb-2">Current Number Being Served:</div>
-                <div className="text-6xl font-bold text-yellow-600">{queueNumber}</div>
-              </div>
-              
-              {myNumber && (
-                <div className="text-center border-t-2 border-yellow-300 pt-4">
-                  <div className="text-sm text-gray-600 mb-2">Your Number:</div>
-                  <div className="text-4xl font-bold text-blue-600">{myNumber}</div>
+          {/* RIGHT INTERACTIVE PANEL */}
+          <div className="flex-1 bg-white rounded-xl shadow-lg border border-gray-300 overflow-hidden">
+            {stage === 'queue' && (
+              <div>
+                <div className="bg-[#5b94df] rounded-t-lg p-8">
+                  <div className="text-center">
+                    <div className="text-2xl text-white mb-4 font-semibold">Now Serving:</div>
+                    <div className="bg-white rounded-lg py-6 px-4 inline-block">
+                      <div className="text-7xl font-bold text-gray-800 tracking-wider">{String(queueNumber).padStart(3, '0')}</div>
+                    </div>
+                  </div>
                 </div>
-              )}
-            </div>
 
-            {!myNumber ? (
-              <button
-                onClick={handleTakeNumber}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-lg transition-colors mb-4"
-              >
-                Take a Number
-              </button>
-            ) : queueNumber >= myNumber ? (
-              <button
-                onClick={handleProceed}
-                className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-6 rounded-lg transition-colors mb-4"
-              >
-                Proceed
-              </button>
-            ) : (
-              <div className="text-center text-gray-600 mb-4">
-                Waiting for your number... ({myNumber - queueNumber} people ahead)
+                <div className="p-6 space-y-4">
+                  {!myNumber ? (
+                    <div className="flex items-center gap-4">
+                      <img 
+                        src="/queue-ticket.png" 
+                        alt="Take a number"
+                        onClick={handleTakeNumber}
+                        className="w-24 h-24 object-contain cursor-pointer hover:scale-110 transition-transform shrink-0"
+                      />
+                      <p className="text-gray-700 font-semibold text-lg uppercase">
+                        Please take a number and wait for your turn...
+                      </p>
+                    </div>
+                  ) : queueNumber >= myNumber ? (
+                    <button
+                      onClick={handleProceed}
+                      className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-6 rounded-lg transition-colors"
+                    >
+                      Proceed to Service
+                    </button>
+                  ) : (
+                    <div className="flex items-center gap-4">
+                      <img 
+                        src="/coffee.png" 
+                        alt="Get coffee"
+                        onClick={handleSkipQueue}
+                        className="w-24 h-24 object-contain cursor-pointer hover:scale-110 transition-transform shrink-0"
+                      />
+                      <p className="text-gray-700 font-semibold text-lg uppercase">
+                        Your queue number is <span className="text-blue-800">{myNumber}</span>, thank you for your patience
+                      </p>
+                    </div>
+                  )}
+                </div>
               </div>
             )}
 
-            <button
-              onClick={handleSkipQueue}
-              className="w-full bg-amber-600 hover:bg-amber-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
-            >
-              ☕ Skip the Queue?
-            </button>
-          </div>
-        )}
+            {stage === 'coffee-prompt' && (
+              <div>
+                <div className="bg-amber-500 rounded-t-lg p-8">
+                  <h2 className="text-3xl font-bold text-white mb-2">Tired of waiting?</h2>
+                </div>
+                <div className="p-6 space-y-4">
+                  <p className="text-gray-700 text-lg mb-11">
+                    You can propably <span className="text-blue-800">skip</span> all this waiting if you help the agency to wake up...
+                  
+                  </p>
 
-        {stage === 'coffee-prompt' && (
-          <div>
-            <div className="bg-amber-50 border-2 border-amber-500 rounded-lg p-6 mb-6">
-              <h2 className="text-2xl font-bold text-amber-900 mb-4">Skip the Queue?</h2>
-              <p className="text-gray-700 mb-4">
-                You can buy us a "coffee" to skip the queue... if you know what we mean. 😉
-              </p>
-              <p className="text-sm text-gray-600">
-                (This will open a payment portal in a new window)
-              </p>
-            </div>
-
-            <div className="space-y-4">
-              <button
-                onClick={handleBuyCoffee}
-                className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-6 rounded-lg transition-colors"
-              >
-                ☕ Buy Me a Coffee
-              </button>
-              <button
-                onClick={handleGoBack}
-                className="w-full bg-gray-600 hover:bg-gray-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
-              >
-                Go Back, I am too scared to bribe
-              </button>
-            </div>
-          </div>
-        )}
-
-        {stage === 'bribery-success' && (
-          <div>
-            <div className="bg-green-50 border-2 border-green-500 rounded-lg p-6 mb-6">
-              <h2 className="text-2xl font-bold text-green-900 mb-4">
-                Bribery is so good! 💰
-              </h2>
-              <p className="text-gray-700">
-                Thank you for the "coffee"! You may now proceed directly to the front of the line.
-              </p>
-            </div>
-
-            <button
-              onClick={handleProceed}
-              className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-6 rounded-lg transition-colors"
-            >
-              Proceed
-            </button>
-          </div>
-        )}
-
-        {stage === 'upload' && (
-          <div>
-            <p className="text-gray-700 mb-6">
-              Please upload the required document to receive your approval stamp.
-            </p>
-
-            <div className="bg-blue-50 border-2 border-blue-400 rounded-lg p-6 mb-6">
-              <p className="text-blue-900 font-semibold mb-4">
-                Required: Document must be in *.epub format
-              </p>
-              
-              <input
-                type="file"
-                onChange={handleFileChange}
-                accept=".epub"
-                className="w-full px-4 py-3 border-2 border-gray-400 rounded focus:outline-none focus:border-blue-500 mb-4"
-              />
-
-              {file && (
-                <p className="text-sm text-gray-600">
-                  Selected: {file.name}
-                </p>
-              )}
-            </div>
-
-            {message && (
-              <div className={`p-4 rounded-lg mb-4 ${
-                message.includes('✓')
-                  ? 'bg-green-100 text-green-800'
-                  : 'bg-red-100 text-red-800'
-              }`}>
-                {message}
+                  <button
+                    onClick={handleBuyCoffee}
+                    className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-6 rounded-lg transition-colors"
+                  >
+                    ☕ Buy Me a Coffee
+                  </button>
+                  <button
+                    onClick={handleGoBack}
+                    className="w-full bg-gray-600 hover:bg-gray-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
+                  >
+                    Go Back to Queue
+                  </button>
+                </div>
               </div>
             )}
 
-            <button
-              onClick={handleFileSubmit}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-lg transition-colors"
-            >
-              Submit Document
-            </button>
+            {stage === 'bribery-success' && (
+              <div>
+                <div className="bg-green-600 rounded-t-lg p-6">
+                  <h2 className="text-3xl font-bold text-white mb-2">
+                    Bribery is so good
+                  </h2>
+                </div>
+                <div className="p-6 space-y-12">
+                  <p className="text-gray-700 text-lg">
+                    Thank you for the "coffee"! You may now proceed directly to the front of the line.
+                  </p>
+
+                  <button
+                    onClick={handleProceed}
+                    className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-6 rounded-lg transition-colors"
+                  >
+                    Proceed to Service
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {stage === 'upload' && (
+              <div>
+                <div className="bg-[#5b94df] rounded-t-lg p-6">
+                  <p className="text-white font-semibold text-xl">
+                    Please upload the correct document for review
+                  </p>
+                </div>
+
+                <div className="p-6 space-y-4">
+                  <div className="bg-blue-50 border-2 border-blue-400 rounded-lg p-4">
+                    <p className="text-blue-900 font-semibold mb-4">
+                      Required: Document must be in *.epub format
+                    </p>
+                    
+                    <input
+                      type="file"
+                      onChange={handleFileChange}
+                      accept=".epub"
+                      className="w-full px-4 py-3 border-2 border-gray-400 rounded focus:outline-none focus:border-blue-500"
+                    />
+
+                    {file && (
+                      <p className="text-sm text-gray-600 mt-3">
+                        Selected: {file.name}
+                      </p>
+                    )}
+                  </div>
+
+                  {message && (
+                    <div className={`p-4 rounded-lg ${
+                      message.includes('✓')
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-red-100 text-red-800'
+                    }`}>
+                      {message}
+                    </div>
+                  )}
+
+                  <button
+                    onClick={handleFileSubmit}
+                    className="w-full bg-[#5b94df] hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-lg transition-colors"
+                  >
+                    Submit Document
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
-        )}
-      </div>
+
+        </div>
+
       </div>
     </GameLayout>
   );
