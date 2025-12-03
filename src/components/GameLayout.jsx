@@ -131,7 +131,7 @@ const GameLayout = ({ children }) => {
                             task.taskType === 'CAPTCHA' ? 'Prove You\'re Not a Robot (Again)' :
                             task.taskType === 'COFFEE' ? 'Mandatory Coffee Break Fee' :
                             task.taskType === 'SIGNATURE' ? 'Sign Here, Here, and Here' :
-                            task.taskType === 'DISPLAY' ? 'Read and Acknowledge Everything' :
+                            task.taskType === 'DISPLAY' ? 'Apply for nepotism allowance' :
                             task.taskType
                           }
                         </div>

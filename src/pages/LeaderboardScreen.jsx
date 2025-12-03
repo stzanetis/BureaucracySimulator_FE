@@ -11,7 +11,8 @@ const LeaderboardScreen = () => {
     const fetchLeaderboard = async () => {
       try {
         const data = await api.getLeaderboard();
-        setLeaderboardData(data.leaderboard || []);
+        // Limit to top 10 entries
+        setLeaderboardData((data.leaderboard || []).slice(0, 9));
       } catch (error) {
         console.error('Error fetching leaderboard:', error);
       } finally {
