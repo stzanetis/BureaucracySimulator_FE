@@ -89,16 +89,21 @@ Cypress.Commands.add('mockAboutUs', (paragraph = 'Test about us content') => {
 });
 
 // Command: Mock endscreen data
-Cypress.Commands.add('mockEndscreen', (percentile = 75) => {
+Cypress.Commands.add('mockEndscreen', (percentile = 75, elapsedTime = null) => {
   cy.intercept('POST', '**/endscreen/**', (req) => {
     req.headers['authorization'] = AUTH_HEADER;
+    // Use the elapsedTime from request body if not provided
+    const timeToReturn = elapsedTime !== null ? elapsedTime : req.body.elapsedTime;
     req.reply({
       statusCode: 200,
       body: {
         success: true,
         data: {
+          elapsedTime: timeToReturn,
           percentile
-        }
+        },
+        error: null,
+        message: 'Endscreen stats submitted.'
       }
     });
   }).as('postEndscreen');
