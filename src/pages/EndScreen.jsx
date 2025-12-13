@@ -38,7 +38,7 @@ const EndScreen = () => {
         resetGame();
         navigate('/');
     };
-
+    
     if (loading) {
         return (
             <div className="min-h-screen bg-gray-300 flex items-center justify-center">
@@ -47,7 +47,6 @@ const EndScreen = () => {
         );
     }
 
-    const formattedScore = (elapsedTime / 60).toFixed(2); 
     const displayPercentile = 100 - percentile; 
 
     return (
@@ -70,7 +69,7 @@ const EndScreen = () => {
 
                     {/* Statistics Message */}
                     <div className="text-center text-gray-700 text-lg leading-relaxed">
-                        Your score of <span className="text-[#003476] font-bold">{formattedScore}</span> places you in the top <span className="text-[#003476] font-bold">{displayPercentile}%</span> of players.
+                        Your score of <span className="text-[#003476] font-bold">{elapsedTime}</span> places you in the top <span className="text-[#003476] font-bold">{displayPercentile}%</span> of players.
                     </div>
                 </div>
 
