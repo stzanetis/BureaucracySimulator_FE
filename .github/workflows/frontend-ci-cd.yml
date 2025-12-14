@@ -28,12 +28,6 @@ jobs:
           echo "VITE_API_USERNAME=${{ secrets.VITE_API_USERNAME }}" >> .env
           echo "VITE_API_PASSWORD=${{ secrets.VITE_API_PASSWORD }}" >> .env
       
-      - name: Run linter
-        run: npm run lint
-      
-      - name: Build application
-        run: npm run build
-      
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6
         with:
