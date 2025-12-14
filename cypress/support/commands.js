@@ -7,6 +7,8 @@ const AUTH_USERNAME = 'admin';
 const AUTH_PASSWORD = 'supersecret';
 const AUTH_HEADER = 'Basic ' + btoa(`${AUTH_USERNAME}:${AUTH_PASSWORD}`);
 
+import { puzzleAnswerMap } from './puzzleAnswers';
+
 // Command: Start a new game with a nickname
 Cypress.Commands.add('startGame', (nickname = 'TestPlayer') => {
   cy.visit('/');
@@ -37,8 +39,10 @@ Cypress.Commands.add('mockApiResponses', () => {
         success: true,
         data: {
           toDoList: [
-            { id: 1, title: 'Task 1', completed: false, type: 'captcha' },
-            { id: 2, title: 'Task 2', completed: false, type: 'form' }
+            { id: 2, taskType: 'FORM', completed: false, pageName: 'form-task' },
+            { id: 3, taskType: 'PUZZLE', completed: false, pageName: 'puzzle-task' },
+            { id: 7, taskType: 'DISPLAY', completed: false, pageName: 'display-task' },
+            { id: 9, taskType: 'COFFEE', completed: false, pageName: 'coffee-task' }
           ],
           chatbotMessages: [
             { text: 'Welcome to the game!' },
@@ -151,4 +155,130 @@ Cypress.Commands.add('setupGameContext', () => {
       isTimerRunning: true
     }));
   });
+});
+
+// Complete Form Task
+Cypress.Commands.add('fillForm', ({
+  fullName,
+  idNumber,
+  dob,
+  purpose,
+  address,
+  signature
+}) => {
+
+  cy.get('input[placeholder="First Middle Last"]')
+    .should('be.visible')
+    .clear()
+    .type(fullName);
+
+  cy.get('input[placeholder="000-000-0000"]')
+    .should('be.visible')
+    .clear()
+    .type(idNumber);
+
+  cy.get('input[type="date"]')
+    .should('be.visible')
+    .clear()
+    .type(dob)
+
+  cy.get('select')
+    .should('be.visible')
+    .select(purpose);
+
+  cy.get('input[placeholder="Street, City, State, ZIP"]')
+    .should('be.visible')
+    .clear()
+    .type(address);
+
+  cy.get('textarea[placeholder="Your signature"]')
+    .should('be.visible')
+    .clear()
+    .type(signature);
+});
+
+// Complete Display Task
+Cypress.Commands.add('completeDisplayTask', () => {
+  cy.get('body').click();
+
+  cy.get('body').type('====', { force: true });
+
+  cy.contains('Complete Audit')
+    .should('be.enabled')
+    .click();
+});
+
+// Complete Coffee Task
+Cypress.Commands.add('completeCoffeTask', () => {
+  // Prevent external tabs (Buy Me a Coffee)
+  cy.window().then((win) => {
+    cy.stub(win, 'open').as('windowOpen')
+  })
+
+  // Take a number
+  cy.get('img[alt="Take a number"]')
+    .should('be.visible')
+    .click()
+
+  cy.contains(/your queue number is/i)
+    .should('be.visible')
+
+  // Coffee icon
+  cy.get('img[alt="Get coffee"]')
+    .should('be.visible')
+    .click()
+
+  // Buy coffee (new tab ignored)
+  cy.contains('Buy Me a Coffee')
+    .should('be.visible')
+    .click()
+
+  cy.get('@windowOpen').should('have.been.called')
+
+  // Proceed
+  cy.contains('Proceed to Service')
+    .should('be.visible')
+    .click()
+
+  // Upload EPUB
+  cy.get('input[type="file"]')
+    .should('exist')
+    .selectFile(
+      {
+        contents: Cypress.Buffer.from('fake epub content'),
+        fileName: 'document.epub',
+        mimeType: 'application/epub+zip',
+      },
+      { force: true }
+    )
+
+  cy.contains('Submit Document')
+    .should('be.enabled')
+    .click()
+});
+
+// Complete Puzzle Task
+Cypress.Commands.add('solvePuzzle', () => {
+  cy.get('input', { timeout: 8000 }).should('be.visible');
+
+  cy.get('body')
+    .invoke('text')
+    .then((rawText) => {
+      const text = rawText.replace(/\s+/g, ' ').trim();
+
+      const puzzle = puzzleAnswerMap.find(p =>
+        text.includes(p.match)
+      );
+
+      expect(
+        puzzle,
+        'Puzzle match found in page text'
+      ).to.exist;
+
+      cy.get('input')
+        .clear()
+        .type(puzzle.answer);
+
+      cy.contains('Submit Answer').click();
+    });
 });
