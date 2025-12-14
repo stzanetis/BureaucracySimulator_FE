@@ -36,14 +36,6 @@ describe('StartScreen - E2E Tests', () => {
       cy.url().should('include', '/game');
     });
 
-    it('should respect 20 character nickname limit', () => {
-      const longNickname = 'ThisIsAVeryLongNickname123456';
-      const expectedNickname = longNickname.substring(0, 20);
-      
-      cy.get('input[placeholder="Nickname..."]')
-        .type(longNickname)
-        .should('have.value', expectedNickname);
-    });
 
     it('should navigate to leaderboard when clicking star button', () => {
       cy.mockLeaderboard();
@@ -146,6 +138,15 @@ describe('StartScreen - E2E Tests', () => {
       
       // Should remain on start screen
       cy.url().should('eq', Cypress.config().baseUrl + '/');
+    });
+    
+    it('should respect 20 character nickname limit', () => {
+      const longNickname = 'ThisIsAVeryLongNickname123456';
+      const expectedNickname = longNickname.substring(0, 20);
+      
+      cy.get('input[placeholder="Nickname..."]')
+        .type(longNickname)
+        .should('have.value', expectedNickname);
     });
   });
 

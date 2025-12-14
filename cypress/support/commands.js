@@ -53,10 +53,19 @@ Cypress.Commands.add('mockApiResponses', () => {
 // Command: Mock leaderboard data
 Cypress.Commands.add('mockLeaderboard', (entries = []) => {
   const defaultEntries = [
-    { name: 'Player1', score: '10.25' },
-    { name: 'Player2', score: '12.50' },
-    { name: 'Player3', score: '15.75' }
+    { name: 'Player1', score: '105' },
+    { name: 'Player2', score: '369' },
+    { name: 'Player3', score: '' }
   ];
+  
+  const leaderboardData = entries.length > 0 ? entries : defaultEntries;
+  
+  // Sort entries by score (numeric, ascending - lower is better)
+  const sortedData = [...leaderboardData].sort((a, b) => {
+    const scoreA = a.score === '' ? Infinity : parseInt(a.score, 10);
+    const scoreB = b.score === '' ? Infinity : parseInt(b.score, 10);
+    return scoreA - scoreB;
+  });
   
   cy.intercept('GET', '**/leaderboard/', (req) => {
     req.headers['authorization'] = AUTH_HEADER;
@@ -65,7 +74,7 @@ Cypress.Commands.add('mockLeaderboard', (entries = []) => {
       body: {
         success: true,
         data: {
-          leaderboard: entries.length > 0 ? entries : defaultEntries
+          leaderboard: sortedData
         }
       }
     });
@@ -89,7 +98,7 @@ Cypress.Commands.add('mockAboutUs', (paragraph = 'Test about us content') => {
 });
 
 // Command: Mock endscreen data
-Cypress.Commands.add('mockEndscreen', (percentile = 75) => {
+Cypress.Commands.add('mockEndscreen', (percentile = 75, elapsedTime = null) => {
   cy.intercept('POST', '**/endscreen/**', (req) => {
     req.headers['authorization'] = AUTH_HEADER;
     req.reply({
@@ -97,6 +106,7 @@ Cypress.Commands.add('mockEndscreen', (percentile = 75) => {
       body: {
         success: true,
         data: {
+          elapsedTime,
           percentile
         }
       }
