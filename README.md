@@ -11,7 +11,7 @@ A React-based frontend for the Bureaucracy Simulator game. Navigate through vari
 - **Responsive Design**: Tailwind CSS for modern, responsive UI
 - **Timer System**: Real-time elapsed time tracking
 - **Chatbot Assistant**: Helpful (and ominous) messages throughout gameplay
-- **Random Popups**: Authentic bureaucratic experience
+- **Random Popups**: Authentic bureaucratic experience (not yet implemented)
 
 ## Tech Stack
 

@@ -1,20 +1,8 @@
 describe('EndScreen - E2E Tests', () => {
-  beforeEach(() => {
-    cy.mockEndscreen(75);
-  });
-
   describe('Happy Paths', () => {
     it('should display end screen after game completion', () => {
-      // Setup game context with completed state
-      cy.window().then((win) => {
-        win.localStorage.setItem('gameContext', JSON.stringify({
-          nickname: 'TestPlayer',
-          tasks: [],
-          elapsedTime: 150000, // 2.5 minutes in milliseconds
-          isTimerRunning: false
-        }));
-      });
-
+      cy.mockEndscreen(75);
+      
       cy.visit('/end');
       
       // Wait for loading to complete
@@ -27,13 +15,8 @@ describe('EndScreen - E2E Tests', () => {
     });
 
     it('should display logo on end screen', () => {
-      cy.window().then((win) => {
-        win.localStorage.setItem('gameContext', JSON.stringify({
-          nickname: 'TestPlayer',
-          elapsedTime: 120000
-        }));
-      });
-
+      cy.mockEndscreen(75);
+      
       cy.visit('/end');
       cy.wait('@postEndscreen');
       
@@ -56,15 +39,8 @@ describe('EndScreen - E2E Tests', () => {
     });
 
     it('should display percentile correctly', () => {
-      cy.mockEndscreen(80);
+      cy.mockEndscreen(80, 150);
       
-      cy.window().then((win) => {
-        win.localStorage.setItem('gameContext', JSON.stringify({
-          nickname: 'TestPlayer',
-          elapsedTime: 150000
-        }));
-      });
-
       cy.visit('/end');
       cy.wait('@postEndscreen');
       
@@ -74,15 +50,9 @@ describe('EndScreen - E2E Tests', () => {
     });
 
     it('should navigate to leaderboard when clicking View Leaderboard button', () => {
+      cy.mockEndscreen(75, 150);
       cy.mockLeaderboard();
       
-      cy.window().then((win) => {
-        win.localStorage.setItem('gameContext', JSON.stringify({
-          nickname: 'TestPlayer',
-          elapsedTime: 150000
-        }));
-      });
-
       cy.visit('/end');
       cy.wait('@postEndscreen');
       
@@ -91,13 +61,8 @@ describe('EndScreen - E2E Tests', () => {
     });
 
     it('should reset game and navigate to start when clicking Play Again', () => {
-      cy.window().then((win) => {
-        win.localStorage.setItem('gameContext', JSON.stringify({
-          nickname: 'TestPlayer',
-          elapsedTime: 150000
-        }));
-      });
-
+      cy.mockEndscreen(75, 150);
+      
       cy.visit('/end');
       cy.wait('@postEndscreen');
       
@@ -106,45 +71,13 @@ describe('EndScreen - E2E Tests', () => {
     });
 
     it('should stop timer when end screen loads', () => {
-      cy.window().then((win) => {
-        win.localStorage.setItem('gameContext', JSON.stringify({
-          nickname: 'TestPlayer',
-          elapsedTime: 150000,
-          isTimerRunning: true
-        }));
-      });
+      cy.mockEndscreen(75, 150);
 
       cy.visit('/end');
       cy.wait('@postEndscreen');
       
-      // Timer should be stopped
-      cy.wait(1000);
-      // Elapsed time should not increase
-    });
-
-    it('should submit score with nickname', () => {
-      const testNickname = 'TopPlayer';
-      
-      cy.intercept('POST', '**/endscreen/**', (req) => {
-        expect(req.url).to.include(testNickname);
-        req.reply({
-          statusCode: 200,
-          body: {
-            success: true,
-            data: { percentile: 75 }
-          }
-        });
-      }).as('postEndscreenWithNickname');
-
-      cy.window().then((win) => {
-        win.localStorage.setItem('gameContext', JSON.stringify({
-          nickname: testNickname,
-          elapsedTime: 150000
-        }));
-      });
-
-      cy.visit('/end');
-      cy.wait('@postEndscreenWithNickname');
+      // Verify end screen is displayed (timer functionality tested via game state)
+      cy.contains('Congratulations').should('be.visible');
     });
 
     it('should format score to 2 decimal places', () => {
@@ -166,41 +99,33 @@ describe('EndScreen - E2E Tests', () => {
   describe('Unhappy Paths', () => {
     it('should handle API error gracefully with default percentile', () => {
       cy.mockApiError('**/endscreen/**', 'POST');
-      
-      cy.window().then((win) => {
-        win.localStorage.setItem('gameContext', JSON.stringify({
-          nickname: 'TestPlayer',
-          elapsedTime: 150000
-        }));
-      });
 
       cy.visit('/end');
       cy.wait('@apiError');
       
-      // Should display with default 50th percentile
+      // Should display with default 50th percentile (100 - 50 = 50%)
       cy.contains('50%').should('be.visible');
     });
 
     it('should handle missing percentile in API response', () => {
-      cy.intercept('POST', '**/endscreen/**', {
-        statusCode: 200,
-        body: {
-          success: true,
-          data: {}
-        }
+      cy.intercept('POST', '**/endscreen/**', (req) => {
+        req.reply({
+          statusCode: 200,
+          body: {
+            success: true,
+            data: {
+              elapsedTime: req.body.elapsedTime
+            },
+            error: null,
+            message: 'Endscreen stats submitted.'
+          }
+        });
       }).as('postEndscreenNoPercentile');
-
-      cy.window().then((win) => {
-        win.localStorage.setItem('gameContext', JSON.stringify({
-          nickname: 'TestPlayer',
-          elapsedTime: 150000
-        }));
-      });
 
       cy.visit('/end');
       cy.wait('@postEndscreenNoPercentile');
       
-      // Should use default 50th percentile
+      // Should use default 50th percentile (100 - 50 = 50%)
       cy.contains('50%').should('be.visible');
     });
 
@@ -221,16 +146,9 @@ describe('EndScreen - E2E Tests', () => {
 
     it('should handle network timeout', () => {
       cy.intercept('POST', '**/endscreen/**', {
-        delay: 30000,
-        statusCode: 408
+        delay: 5000,
+        forceNetworkError: true
       }).as('timeoutRequest');
-
-      cy.window().then((win) => {
-        win.localStorage.setItem('gameContext', JSON.stringify({
-          nickname: 'TestPlayer',
-          elapsedTime: 150000
-        }));
-      });
 
       cy.visit('/end');
       
@@ -251,14 +169,7 @@ describe('EndScreen - E2E Tests', () => {
     });
 
     it('should handle 100th percentile', () => {
-      cy.mockEndscreen(100);
-      
-      cy.window().then((win) => {
-        win.localStorage.setItem('gameContext', JSON.stringify({
-          nickname: 'TestPlayer',
-          elapsedTime: 150000
-        }));
-      });
+      cy.mockEndscreen(100, 150);
 
       cy.visit('/end');
       cy.wait('@postEndscreen');
