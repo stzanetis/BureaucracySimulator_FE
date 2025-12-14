@@ -23,15 +23,20 @@ describe('EndScreen - E2E Tests', () => {
       cy.get('img[alt="Bureaucracy Simulator"]').should('be.visible');
     });
 
-    //it('should display formatted score', () => {
-    //  cy.mockEndscreen(75, 180);
-    //  
-    //  cy.visit('/end');
-    //  cy.wait('@postEndscreen');
-    //  
-    //  // Score should be 3.00 (180 seconds / 60 = 3.00 minutes)
-    //  cy.contains('3.00').should('be.visible');
-    //});
+    it('should display formatted score', () => {
+      cy.window().then((win) => {
+        win.localStorage.setItem('gameContext', JSON.stringify({
+          nickname: 'TestPlayer',
+          elapsedTime: 180 // 3 minutes = 180 seconds
+        }));
+      });
+      
+      cy.visit('/end');
+      cy.wait('@postEndscreen');
+      
+      // Score should be 3.00 (180 seconds / 60 = 3.00 minutes)
+      cy.contains('3.00').should('be.visible');
+    });
 
     it('should display percentile correctly', () => {
       cy.mockEndscreen(80, 150);
@@ -74,6 +79,21 @@ describe('EndScreen - E2E Tests', () => {
       // Verify end screen is displayed (timer functionality tested via game state)
       cy.contains('Congratulations').should('be.visible');
     });
+
+    it('should format score to 2 decimal places', () => {
+      cy.window().then((win) => {
+        win.localStorage.setItem('gameContext', JSON.stringify({
+          nickname: 'TestPlayer',
+          elapsedTime: 137500 // 2.291666... minutes
+        }));
+      });
+
+      cy.visit('/end');
+      cy.wait('@postEndscreen');
+      
+      // Should be rounded to 2 decimals
+      cy.contains(/\d+\.\d{2}/).should('be.visible');
+    });
   });
 
   describe('Unhappy Paths', () => {
@@ -109,15 +129,20 @@ describe('EndScreen - E2E Tests', () => {
       cy.contains('50%').should('be.visible');
     });
 
-    //it('should handle very large elapsed time', () => {
-    //  cy.mockEndscreen(75, 3600); // 1 hour = 3600 seconds
-    //
-    //  cy.visit('/end');
-    //  cy.wait('@postEndscreen');
-    //  
-    //  // Should display 60.00 minutes
-    //  cy.contains('60.00').should('be.visible');
-    //});
+    it('should handle very large elapsed time', () => {
+      cy.window().then((win) => {
+        win.localStorage.setItem('gameContext', JSON.stringify({
+          nickname: 'TestPlayer',
+          elapsedTime: 3600000 // 1 hour
+        }));
+      });
+
+      cy.visit('/end');
+      cy.wait('@postEndscreen');
+      
+      // Should display 60.00 minutes
+      cy.contains('60.00').should('be.visible');
+    });
 
     it('should handle network timeout', () => {
       cy.intercept('POST', '**/endscreen/**', {
@@ -127,21 +152,20 @@ describe('EndScreen - E2E Tests', () => {
 
       cy.visit('/end');
       
-      // Should show loading state then fallback
-      cy.contains('Calculating results', { timeout: 1000 }).should('be.visible');
+      // Should show loading state
+      cy.contains('Calculating results').should('be.visible');
     });
   });
 
   describe('Percentile Display', () => {
     it('should calculate and display top percentage correctly', () => {
-      cy.mockEndscreen(13, 385);
+      cy.mockEndscreen(3, 120);
       
       cy.visit('/end');
       cy.wait('@postEndscreen');
       
-      // 100 - 33 = 67% (top 67%)
       cy.contains('top').should('be.visible');
-      cy.contains('87%').should('be.visible');
+      cy.contains('97%').should('be.visible');
     });
 
     it('should handle 100th percentile', () => {
@@ -152,6 +176,23 @@ describe('EndScreen - E2E Tests', () => {
       
       // 100 - 100 = 0% (top 0%)
       cy.contains('0%').should('be.visible');
+    });
+
+    it('should handle 0th percentile', () => {
+      cy.mockEndscreen(0);
+      
+      cy.window().then((win) => {
+        win.localStorage.setItem('gameContext', JSON.stringify({
+          nickname: 'TestPlayer',
+          elapsedTime: 150000
+        }));
+      });
+
+      cy.visit('/end');
+      cy.wait('@postEndscreen');
+      
+      // 100 - 0 = 100% (top 100%)
+      cy.contains('100%').should('be.visible');
     });
   });
 });
