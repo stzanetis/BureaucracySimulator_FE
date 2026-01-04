@@ -5,7 +5,7 @@ import api from '../../services/api';
 import GameLayout from '../GameLayout';
 
 const SignatureTask = () => {
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
   const { taskId } = useParams();
   const { updateTaskStatus } = useGame();
   const [stage, setStage] = useState('queue'); // queue, coffee-prompt, kicked-out, forge

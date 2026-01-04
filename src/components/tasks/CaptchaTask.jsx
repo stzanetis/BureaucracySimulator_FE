@@ -5,7 +5,7 @@ import GameLayout from '../GameLayout';
 import api from '../../services/api';
 
 const CaptchaTask = () => {
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
   const { taskId } = useParams();
   const { updateTaskStatus } = useGame();
   const [captchaData, setCaptchaData] = useState(null);

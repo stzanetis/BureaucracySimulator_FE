@@ -31,7 +31,7 @@ const StartScreen = () => {
 
     try {
       const seed = Math.floor(Math.random() * 10000);
-	    const response = await api.postUser(nickname, seed);
+	  const response = await api.postUser(nickname, seed);
       const messages = (response.chatbotMessages || []).map(msg => msg.text);
       startGame(nickname, response.toDoList, messages);
       navigate('/game');
