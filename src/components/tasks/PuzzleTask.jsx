@@ -46,12 +46,12 @@ const PuzzleTask = () => {
   const handleSubmit = async () => {
     try {
       if (taskId && taskId !== '0') {
-        const response = await api.putTaskCheck(taskId, { 
-          puzzleNumber: currentIndex + 1,
-          answer: answer 
-        });
+        // const response = await api.putTaskCheck(taskId, { 
+        //   puzzleNumber: currentIndex + 1,
+        //   answer: answer 
+        // });
         
-        if (response.isTaskCompleted || answer.toLowerCase() === currentPuzzle.answer.toLowerCase()) {
+        if (answer.toLowerCase() === currentPuzzle.correctAnswer.toLowerCase()) {
           if (currentIndex < puzzles.length - 1) {
             setMessage('✓ Correct! Moving to next puzzle...');
             setTimeout(() => {
@@ -69,7 +69,7 @@ const PuzzleTask = () => {
         }
       } else {
         // Not in todolist, just check answer
-        if (answer.toLowerCase() === currentPuzzle.answer.toLowerCase()) {
+        if (answer.toLowerCase() === currentPuzzle.correctAnswer.toLowerCase()) {
           if (currentIndex < puzzles.length - 1) {
             setMessage('✓ Correct! Moving to next puzzle...');
             setTimeout(() => {
