@@ -1,11 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useGame } from '../../context/GameContext';
 import GameLayout from '../GameLayout';
 import api from '../../services/api';
 
 const CaptchaTask = () => {
-  //const navigate = useNavigate();
   const { taskId } = useParams();
   const { updateTaskStatus } = useGame();
   const [captchaData, setCaptchaData] = useState(null);

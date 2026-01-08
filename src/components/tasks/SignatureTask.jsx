@@ -1,11 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useGame } from '../../context/GameContext';
 import api from '../../services/api';
 import GameLayout from '../GameLayout';
 
 const SignatureTask = () => {
-  //const navigate = useNavigate();
   const { taskId } = useParams();
   const { updateTaskStatus } = useGame();
   const [stage, setStage] = useState('queue'); // queue, coffee-prompt, kicked-out, forge
@@ -50,10 +49,6 @@ const SignatureTask = () => {
     setTimeout(() => {
       setStage('forge');
     }, 2000);
-  };
-
-  const handleForge = () => {
-    setStage('forge');
   };
 
   // Canvas drawing functions

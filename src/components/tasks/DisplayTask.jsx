@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useGame } from '../../context/GameContext';
 import api from '../../services/api';
 import GameLayout from '../GameLayout';
 
 const DisplayTask = () => {
-  //const navigate = useNavigate();
   const { taskId } = useParams();
   const { updateTaskStatus } = useGame();
   const [brightness, setBrightness] = useState(0.02); // Very low initial brightness
