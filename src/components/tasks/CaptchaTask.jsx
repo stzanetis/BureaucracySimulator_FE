@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useGame } from '../../context/GameContext';
 import GameLayout from '../GameLayout';
 import api from '../../services/api';
