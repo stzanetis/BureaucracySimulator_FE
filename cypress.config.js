@@ -7,6 +7,9 @@ export default defineConfig({
     viewportHeight: 720,
     video: false,
     screenshotOnRunFailure: true,
+    setupNodeEvents() {
+      // implement node event listeners here
+    },
     env: {
       apiUrl: 'http://localhost:4000'
     },
