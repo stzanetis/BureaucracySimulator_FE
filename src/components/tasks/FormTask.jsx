@@ -5,7 +5,7 @@ import GameLayout from '../GameLayout';
 import api from '../../services/api';
 
 const FormTask = () => {
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
   const { taskId } = useParams();
   const { updateTaskStatus } = useGame();
   const [formConfig, setFormConfig] = useState(null);
