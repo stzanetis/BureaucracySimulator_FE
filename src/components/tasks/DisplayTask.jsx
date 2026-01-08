@@ -5,7 +5,6 @@ import api from '../../services/api';
 import GameLayout from '../GameLayout';
 
 const DisplayTask = () => {
-  const navigate = useNavigate();
   const { taskId } = useParams();
   const { updateTaskStatus } = useGame();
   const [brightness, setBrightness] = useState(0.02); // Very low initial brightness

@@ -20,7 +20,7 @@ export const GameProvider = ({ children }) => {
   const [songList, setSongList] = useState([]);
   const [chatbotMessages, setChatbotMessages] = useState([]);
   const [currentMessage, setCurrentMessage] = useState('Welcome!');
-  const [shuffledDepartments, setShuffledDepartments] = useState([]);
+  const [_, setShuffledDepartments] = useState([]);
 	
 	useEffect(() => {
     let interval;

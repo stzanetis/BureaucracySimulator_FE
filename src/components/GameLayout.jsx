@@ -113,7 +113,7 @@ const GameLayout = ({ children }) => {
           {tasks && Array.isArray(tasks) && tasks.length > 0 ? (
             <>
               <div className="space-y-3 flex-1 overflow-y-auto">
-                {tasks.map((task, index) => (
+                {tasks.map((task) => (
                   <div
                     key={task.id}
                     className={`p-2 rounded-lg border-2 ${
