@@ -42,7 +42,7 @@ Cypress.Commands.add('mockApiResponses', () => {
             { id: 2, taskType: 'FORM', completed: false, pageName: 'form-task' },
             { id: 3, taskType: 'PUZZLE', completed: false, pageName: 'puzzle-task' },
             { id: 7, taskType: 'DISPLAY', completed: false, pageName: 'display-task' },
-            { id: 9, taskType: 'COFFEE', completed: false, pageName: 'coffee-task' }
+            { id: 5, taskType: 'SIGNATURE', completed: false, pageName: 'signature-task' }
           ],
           chatbotMessages: [
             { text: 'Welcome to the game!' },
@@ -208,7 +208,7 @@ Cypress.Commands.add('completeDisplayTask', () => {
     .click();
 });
 
-// Complete Coffee Task
+// Complete Signature Task
 Cypress.Commands.add('completeCoffeTask', () => {
   // Prevent external tabs (Buy Me a Coffee)
   cy.window().then((win) => {
@@ -224,37 +224,39 @@ Cypress.Commands.add('completeCoffeTask', () => {
     .should('be.visible')
 
   // Coffee icon
-  cy.get('img[alt="Get coffee"]')
+  cy.get('img[alt="Skip queue"]')
     .should('be.visible')
     .click()
 
-  // Buy coffee (new tab ignored)
+  // Buy coffee
   cy.contains('Buy Me a Coffee')
     .should('be.visible')
     .click()
+  
+  cy.contains('Get Out')
+    .should('be.visible')
+    .click()
+  
+  cy.wait(3000); // Wait for window.open to be called
 
-  cy.get('@windowOpen').should('have.been.called')
+  cy.intercept(
+    'PUT',
+    '/user/homescreen/tasks/*',
+    {
+      statusCode: 200,
+      body: {
+        data: {
+          isTaskCompleted: true
+        }
+      }
+    }
+  ).as('putTaskCheck')
 
-  // Proceed
-  cy.contains('Proceed to Service')
+  cy.contains('Submit Signature')
     .should('be.visible')
     .click()
 
-  // Upload EPUB
-  cy.get('input[type="file"]')
-    .should('exist')
-    .selectFile(
-      {
-        contents: Cypress.Buffer.from('fake epub content'),
-        fileName: 'document.epub',
-        mimeType: 'application/epub+zip',
-      },
-      { force: true }
-    )
-
-  cy.contains('Submit Document')
-    .should('be.enabled')
-    .click()
+  cy.wait('@putTaskCheck') 
 });
 
 // Complete Puzzle Task

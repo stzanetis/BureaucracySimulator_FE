@@ -88,11 +88,11 @@ describe('Canonical User Flow with Task Completion', () => {
       '**/user/homescreen/tasks/**'
     ).as('getTask');
 
-    cy.contains('Secretariat of Drowsiness').click();
+    cy.contains('Serious Headquarters of Seriousness').click();
 
     cy.completeCoffeTask();
 
-    cy.contains('File accepted')
+    cy.contains('Signature accepted')
     .should('be.visible')
 
     // USER ACTION: click puzzle task
