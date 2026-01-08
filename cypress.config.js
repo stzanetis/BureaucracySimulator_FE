@@ -1,4 +1,4 @@
-import { defineConfig } from "cypress";
+  import { defineConfig } from "cypress";
 
 export default defineConfig({
   e2e: {
@@ -10,20 +10,11 @@ export default defineConfig({
     setupNodeEvents() {
       // implement node event listeners here
     },
-    env: {
-      apiUrl: 'http://localhost:4000'
-    },
-    // Retry tests on failure
-    retries: {
-      runMode: 2,
-      openMode: 0
-    }
-  },
 
-  component: {
-    devServer: {
-      framework: "react",
-      bundler: "vite",
+    component: {
+      devServer: {
+        framework: "react",
+        bundler: "vite",
+      },
     },
-  },
-});
+  });
