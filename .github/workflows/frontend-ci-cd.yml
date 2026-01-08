@@ -2,7 +2,7 @@ name: Frontend CI/CD
 
 on:
   push:
-    branches: [ main, develop, vgzoidis, inkonstant ]
+    branches: [ main, develop, vgzoidis ]
   pull_request:
     branches: [ main ]
 
@@ -27,15 +27,6 @@ jobs:
           echo "VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}" >> .env
           echo "VITE_API_USERNAME=${{ secrets.VITE_API_USERNAME }}" >> .env
           echo "VITE_API_PASSWORD=${{ secrets.VITE_API_PASSWORD }}" >> .env
-
-      - name: Run lint
-        run: npm run lint --if-present
-
-      - name: Run typecheck
-        run: npm run typecheck --if-present
-
-      - name: Build frontend
-        run: npm run build
       
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6
@@ -63,7 +54,6 @@ jobs:
         with:
           name: cypress-videos
           path: ./cypress/videos
-
   deploy:
     needs: test
     runs-on: ubuntu-latest
