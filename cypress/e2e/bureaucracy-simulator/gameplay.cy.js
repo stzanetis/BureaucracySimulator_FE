@@ -3,11 +3,10 @@ describe('Canonical User Flow with Task Completion', () => {
   beforeEach(() => {
     cy.mockApiResponses();
     cy.mockEndscreen(85, 120000);
+    cy.visit('/');
   });
 
   it('allows a user to start the game, complete a task, and finish', () => {
-
-    cy.visit('/');
 
     // Start screen
     cy.get('img[alt="Bureaucracy Simulator"]').should('be.visible');
@@ -15,7 +14,7 @@ describe('Canonical User Flow with Task Completion', () => {
     cy.get('input[placeholder="Nickname..."]').type('KafkaUser');
     cy.contains('Play').click();
 
-    // cy.wait('@postUser');
+    cy.wait('@postUser');
     cy.url().should('include', '/game');
 
     // Game screen

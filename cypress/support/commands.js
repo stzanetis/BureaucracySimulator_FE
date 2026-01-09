@@ -52,6 +52,52 @@ Cypress.Commands.add('mockApiResponses', () => {
       }
     });
   }).as('postUser');
+
+  // Mock puzzle task API
+  cy.intercept('GET', '**/user/homescreen/tasks/*/puzzle', (req) => {
+    req.headers['authorization'] = AUTH_HEADER;
+    req.reply({
+      statusCode: 200,
+      body: {
+        success: true,
+        data: {
+          title: 'Complete the Puzzles',
+          description: 'Solve all puzzles to complete this task.',
+          puzzles: [
+            {
+              title: 'Regulatory Logic Check',
+              question: 'According to Mandate 7.3.2: "All citizens must file Form A before Form B, unless Form B has already been filed, in which case Form A is unnecessary but must still be filed." Is Form A required?',
+              correctAnswer: 'No',
+              inputPlaceholder: 'Enter your answer',
+              options: ['Yes', 'No']
+            },
+            {
+              title: 'Self-Referential Dilemma',
+              question: 'If every bureaucrat lies on Tuesdays and tells the truth on other days, and a bureaucrat says "I always lie", what day is it?',
+              correctAnswer: 'Neither',
+              inputPlaceholder: 'Enter day or Neither',
+              options: ['Tuesday', 'Neither']
+            }
+          ]
+        }
+      }
+    });
+  }).as('getPuzzleTask');
+
+  // Mock task check API (for form, signature, etc.)
+  cy.intercept('PUT', '**/user/homescreen/tasks/*', (req) => {
+    req.headers['authorization'] = AUTH_HEADER;
+    req.reply({
+      statusCode: 200,
+      body: {
+        success: true,
+        data: {
+          isTaskCompleted: true,
+          message: 'Task completed successfully'
+        }
+      }
+    });
+  }).as('putTaskCheck');
 });
 
 // Command: Mock leaderboard data
