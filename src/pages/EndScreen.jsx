@@ -3,9 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { useGame } from '../context/GameContext';
 import api from '../services/api';
 
+// Final results screen.
+// Submits the player's score and displays ranking feedback.
 const EndScreen = () => {
     const navigate = useNavigate();
     const { elapsedTime, resetGame, nickname, formatTimeInSeconds, endGame } = useGame();
+    
+    // Backend percentile result
     const [percentile, setPercentile] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -39,6 +43,7 @@ const EndScreen = () => {
         navigate('/');
     };
     
+    // Show loading state while results are calculated
     if (loading) {
         return (
             <div className="min-h-screen bg-gray-300 flex items-center justify-center">
@@ -47,6 +52,7 @@ const EndScreen = () => {
         );
     }
 
+    // Convert backend percentile to "top X%" display
     const displayPercentile = 100 - percentile; 
 
     return (
