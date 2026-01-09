@@ -4,20 +4,30 @@ import { useGame } from '../../context/GameContext';
 import api from '../../services/api';
 import GameLayout from '../GameLayout';
 
+// Signature task screen.
+// Simulates a bureaucratic signature process with multiple interaction stages.
 const SignatureTask = () => {
   const { taskId } = useParams();
   const { updateTaskStatus } = useGame();
+
+  // Task flow state (queue → coffee → kicked out → forge)
   const [stage, setStage] = useState('queue'); // queue, coffee-prompt, kicked-out, forge
   const [queueNumber, setQueueNumber] = useState(0);
   const [myNumber, setMyNumber] = useState(null);
+
+  // Canvas drawing state
   const [isDrawing, setIsDrawing] = useState(false);
-  const [message, setMessage] = useState('');
   const canvasRef = useRef(null);
 
+  // UI feedback message
+  const [message, setMessage] = useState('');
+
+  // Initialize queue number on first render  
   useEffect(() => {
     setQueueNumber(Math.floor(Math.random() * 100));
   }, []);
 
+  // Simulate taking a queue number and waiting progression
   const handleTakeNumber = () => {
     const number = Math.floor(Math.random() * 900) + 100;
     setMyNumber(number);
@@ -33,6 +43,7 @@ const SignatureTask = () => {
     }, 100);
   };
 
+  // Queue-skipping interaction handlers
   const handleSkipQueue = () => {
     setStage('coffee-prompt');
   };
@@ -45,6 +56,7 @@ const SignatureTask = () => {
     setStage('queue');
   };
 
+  // Transition to forging stage after being kicked out
   const handleGetOut = () => {
     setTimeout(() => {
       setStage('forge');
@@ -79,12 +91,14 @@ const SignatureTask = () => {
     setIsDrawing(false);
   };
 
+  // Clear the signature canvas
   const clearCanvas = () => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
   };
 
+  // Submit forged signature and perform a simple validation check
   const handleSubmitSignature = async () => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');

@@ -4,6 +4,8 @@ import { useGame } from "../../context/GameContext";
 import api from "../../services/api";
 import GameLayout from "../GameLayout";
 
+// Puzzle task screen.
+// Loads a sequence of puzzles from the backend and validates user answers.
 const PuzzleTask = () => {
   const navigate = useNavigate();
   const { taskId } = useParams();
@@ -16,6 +18,7 @@ const PuzzleTask = () => {
   const [pageTitle, setPageTitle] = useState('Complete the Puzzles');
   const [pageDescription, setPageDescription] = useState('Solve all puzzles to complete this task.');
 
+  // Fetch puzzle data when taskId changes
   useEffect(() => {
     const fetchPuzzles = async () => {
       try {
@@ -33,6 +36,7 @@ const PuzzleTask = () => {
     fetchPuzzles();
   }, [taskId]);
 
+  // Loading state while puzzles are being fetched
   if (!puzzles) {
     return (
       <GameLayout>
@@ -43,6 +47,7 @@ const PuzzleTask = () => {
 
   const currentPuzzle = puzzles[currentIndex];
 
+  // Validate submitted answer and advance puzzle flow
   const handleSubmit = async () => {
     try {
       if (taskId && taskId !== '0') {

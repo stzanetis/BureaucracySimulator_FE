@@ -4,13 +4,19 @@ import { useGame } from '../../context/GameContext';
 import api from '../../services/api';
 import GameLayout from '../GameLayout';
 
+// Coffee task screen.
+// Simulates queue waiting, optional bribery, and document submission.
 const CoffeeTask = () => {
   const navigate = useNavigate();
   const { taskId } = useParams();
   const { updateTaskStatus } = useGame();
+
+  // Task flow state (queue → coffee prompt → bribery success → upload)
   const [stage, setStage] = useState('queue'); // queue, coffee-prompt, bribery-success, upload
   const [queueNumber, setQueueNumber] = useState(0);
   const [myNumber, setMyNumber] = useState(null);
+
+  // File upload and feedback state
   const [file, setFile] = useState(null);
   const [message, setMessage] = useState('');
 
@@ -19,6 +25,7 @@ const CoffeeTask = () => {
     setQueueNumber(Math.floor(Math.random() * 100));
   }, []);
 
+  // Assign a queue number and simulate queue progression
   const handleTakeNumber = () => {
     const number = Math.floor(Math.random() * 900) + 100;
     setMyNumber(number);
@@ -35,10 +42,12 @@ const CoffeeTask = () => {
     }, 200);
   };
 
+  // Queue-skipping and navigation handlers
   const handleSkipQueue = () => {
     setStage('coffee-prompt');
   };
 
+  // Simulate bribery / payment check
   const handleBuyCoffee = async () => {
     try {
       const response = await api.getTaskPaymentStatus();
@@ -66,10 +75,12 @@ const CoffeeTask = () => {
     setStage('upload');
   };
 
+  // Track selected file
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
   };
 
+  // Validate and submit uploaded document
   const handleFileSubmit = async () => {
     if (!file) {
       setMessage('Please select a file!');
