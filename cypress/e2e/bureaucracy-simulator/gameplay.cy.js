@@ -15,7 +15,7 @@ describe('Canonical User Flow with Task Completion', () => {
     cy.get('input[placeholder="Nickname..."]').type('KafkaUser');
     cy.contains('Play').click();
 
-    // cy.wait('@postUser');
+    cy.wait('@postUser');
     cy.url().should('include', '/game');
 
     // Game screen
