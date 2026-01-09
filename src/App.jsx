@@ -12,11 +12,14 @@ import CoffeeTask from './components/tasks/CoffeeTask';
 import SignatureTask from './components/tasks/SignatureTask';
 import DisplayTask from './components/tasks/DisplayTask';
 
+// Application root component.
+// Defines global providers and client-side routing.
 function App() {
   return (
     <GameProvider>
       <Router>
         <Routes>
+          {/* Main screens */}
           <Route path="/" element={<StartScreen />} />
           <Route path="/leaderboard" element={<LeaderboardScreen />} />
           <Route path="/credits" element={<CreditsScreen />} />

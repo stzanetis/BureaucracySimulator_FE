@@ -4,11 +4,16 @@ import { useGame } from '../context/GameContext';
 import api from '../services/api';
 import {Star, Volume2, VolumeOff, User} from 'lucide-react';
 
+// Start screen of the game.
+// Handles initial data loading, nickname input, and main menu navigation.
 const StartScreen = () => {
     const navigate = useNavigate();
     const {startGame, setSongList, isMusicOn, toggleMusic } = useGame();
+
+  // Player nickname entered on the start screen
     const [nickname, setNickname] = useState('');
 
+  // Load background music playlist when the screen mounts
     useEffect(() => {
       const fetchSongs = async () => {
         try {
@@ -21,6 +26,7 @@ const StartScreen = () => {
       fetchSongs();
     }, [setSongList]);
 
+  // Starts a new game session after validating the nickname
   const handlePlayClick = async (e) => {
     e.preventDefault(); 
     
@@ -30,8 +36,11 @@ const StartScreen = () => {
     }
 
     try {
+      // Generate a random seed for session variability
       const seed = Math.floor(Math.random() * 10000);
       const response = await api.postUser(nickname, seed);
+
+      // Extract chatbot messages and initialize game state
       const messages = (response.chatbotMessages || []).map(msg => msg.text);
       startGame(nickname, response.toDoList, messages);
       navigate('/game');
@@ -41,10 +50,12 @@ const StartScreen = () => {
     }
   };
 
+  // Navigate to leaderboard screen
   const handleLeaderboardClick = () => {
     navigate('/leaderboard');
 	};
 
+  // Navigate to credits / about screen	
 	const handleCreditsClick = () => {
 		navigate('/credits');
 	};

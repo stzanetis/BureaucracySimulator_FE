@@ -4,9 +4,13 @@ import { useGame } from '../../context/GameContext';
 import api from '../../services/api';
 import GameLayout from '../GameLayout';
 
+// Display task screen.
+// Simulates a low-brightness interface that the user must "fix" to proceed.
 const DisplayTask = () => {
   const { taskId } = useParams();
   const { updateTaskStatus } = useGame();
+
+  // Controls the opacity of the dark overlay (lower = darker)
   const [brightness, setBrightness] = useState(0.02); // Very low initial brightness
   const [message, setMessage] = useState('');
 
@@ -18,6 +22,7 @@ const DisplayTask = () => {
     setBrightness(prev => Math.max(prev - 0.1, 0.05));
   };
 
+  // Submit audit completion
   const handleAudit = async () => {
     try {
       if (taskId !== '0') {

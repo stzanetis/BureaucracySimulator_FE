@@ -4,6 +4,9 @@ import { useGame } from '../../context/GameContext';
 import GameLayout from '../GameLayout';
 import api from '../../services/api';
 
+// Form task screen.
+// Dynamically renders a form definition provided by the backend
+// and validates submission based on required fields.
 const FormTask = () => {
   const { taskId } = useParams();
   const { updateTaskStatus } = useGame();

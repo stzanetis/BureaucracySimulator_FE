@@ -2,6 +2,8 @@ import { useNavigate } from 'react-router-dom';
 import { useGame } from '../context/GameContext';
 import { useState, useEffect } from 'react';
 
+// Shared layout for all in-game screens.
+// Provides navigation, timer, chatbot messages, and task list.
 const GameLayout = ({ children }) => {
   const navigate = useNavigate();
   const { tasks, elapsedTime, formatTime, allTasksCompleted, endGame, currentMessage } = useGame();
@@ -41,6 +43,7 @@ const GameLayout = ({ children }) => {
     navigate(routes[department.taskType]);
   };
 
+  // Finish game only when all tasks are completed
   const handleFinish = () => {
     if (allTasksCompleted()) {
       endGame();

@@ -4,6 +4,8 @@ import { useGame } from '../../context/GameContext';
 import GameLayout from '../GameLayout';
 import api from '../../services/api';
 
+// CAPTCHA task screen.
+// Loads a CAPTCHA challenge, validates selections, and handles reload edge cases.
 const CaptchaTask = () => {
   const { taskId } = useParams();
   const { updateTaskStatus } = useGame();
@@ -17,6 +19,7 @@ const CaptchaTask = () => {
     fetchCaptcha();
   }, []);
 
+  // Fetch CAPTCHA task data and randomize image order
   const fetchCaptcha = async () => {
     try {
       const data = await api.getTaskById(taskId);
@@ -34,6 +37,7 @@ const CaptchaTask = () => {
     }
   };
 
+  // Toggle image selection
   const handleImageClick = (id) => {
     setSelectedImages(prev =>
       prev.includes(id)
@@ -42,6 +46,7 @@ const CaptchaTask = () => {
     );
   };
 
+  // Handle reload logic, including spam detection
   const handleReload = () => {
     // Clear existing timer
     if (reloadTimerRef.current) {
@@ -72,6 +77,7 @@ const CaptchaTask = () => {
     fetchCaptcha();
   };
 
+  // Validate selected images against correct answers
   const handleSubmit = async () => {
     try {
       // Check if selected images match the correct ones
@@ -99,6 +105,7 @@ const CaptchaTask = () => {
     }
   };
 
+  // Mark task as completed locally
   const handleComplete = () => {
     if (taskId !== '0') {
       updateTaskStatus(parseInt(taskId), true);

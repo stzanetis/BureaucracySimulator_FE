@@ -1,3 +1,4 @@
+// Mapping between puzzle identifiers and their expected correct answers
 export const puzzleAnswerMap = [
   {
     match: 'Regulatory Logic Check',
