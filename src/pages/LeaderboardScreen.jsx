@@ -2,11 +2,17 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 
+// Displays the leaderboard with the highest-scoring players
 const LeaderboardScreen = () => {
   const navigate = useNavigate();
+
+  // Stores leaderboard entries retrieved from the backend
   const [leaderboardData, setLeaderboardData] = useState([]);
+
+  // Tracks loading state while data is being fetched
   const [loading, setLoading] = useState(true);
 
+  // Fetch leaderboard data once when the screen mounts
   useEffect(() => {
     const fetchLeaderboard = async () => {
       try {

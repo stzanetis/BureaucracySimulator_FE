@@ -2,17 +2,25 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 
+// Credits / About Us screen.
+// Loads descriptive text from the backend and displays it in a static layout.
 const CreditsScreen = () => {
   const navigate = useNavigate();
+
+  // Holds the About Us text retrieved from the API
   const [aboutUsText, setAboutUsText] = useState('');
+
+  // Tracks loading state while fetching content
   const [loading, setLoading] = useState(true);
 
+  // Fetch About Us content once when the screen is first rendered
   useEffect(() => {
     const fetchAboutUs = async () => {
       try {
         const data = await api.getAboutUs();
         setAboutUsText(data.paragraph || '');
       } catch (error) {
+        // Log fetch errors without breaking the UI
         console.error('Error fetching about us:', error);
       } finally {
         setLoading(false);
@@ -25,7 +33,8 @@ const CreditsScreen = () => {
     <div className="min-h-screen bg-[#a1c6ea] flex items-center justify-center p-4">
       <div className="max-w-xl h-[800px] w-full bg-[#c7ddf2] rounded-3xl shadow-2xl p-8 flex flex-col">
         <h1 className="text-4xl font-bold text-center text-white text-shadow-md mb-8">About Us</h1>
-        
+
+        {/* Show a placeholder while content is loading */}
         {loading ? (
           <p className="text-center text-gray-600">Loading...</p>
         ) : (
